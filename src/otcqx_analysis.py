@@ -10,7 +10,7 @@ import os
 
 client = OpenAI(api_key=os.getenv('OPENAI_API_KEY'))
 
-def get_company_embeddings(company_names):
+async def get_company_embeddings(company_names):
     os.makedirs('cache', exist_ok=True)
 
     embeddings = []

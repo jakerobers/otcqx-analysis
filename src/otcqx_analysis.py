@@ -5,6 +5,7 @@ from tqdm import tqdm
 from openai import OpenAI
 from sklearn.cluster import KMeans
 from cache_utils import get_cached_data, cache_data
+from llm_fetchers import EmbeddingFetcher
 import numpy as np
 import os
 
@@ -13,13 +14,9 @@ client = OpenAI(api_key=os.getenv('OPENAI_API_KEY'))
 async def get_company_embeddings(company_names):
     os.makedirs('cache', exist_ok=True)
 
-    embeddings = []
+    fetcher = EmbeddingFetcher(api_key=os.getenv('OPENAI_API_KEY'))
     for name in tqdm(company_names, desc="Generating Embeddings"):
-        async def fetch_embedding():
-            response = client.embeddings.create(input=name, model="text-embedding-3-small")
-            return {'name': name, 'embedding': response.data[0].embedding}
-
-        cached = await get_cached_data(name, fetch_embedding)
+        cached = await get_cached_data(name, lambda: fetcher.fetch_embedding(name))
         embeddings.append(cached['embedding'])
     return np.array(embeddings)
 

@@ -4,6 +4,7 @@ from browser_use import Agent, Controller, ActionResult
 from browser_use.browser.browser import Browser, BrowserConfig
 from langchain_openai import ChatOpenAI
 from cache_utils import get_cached_data, cache_data
+from llm_fetchers import LinkDecisionFetcher
 
 # Configure the browser
 browser = Browser(
@@ -33,13 +34,9 @@ async def download_10k_reports(browser_context, company_name, num_reports=5):
     # Use inference to navigate to the financial reporting or investor relations page
     potential_links = await page.find_links()
 
-    model = ChatOpenAI(model='gpt-4o')
+    fetcher = LinkDecisionFetcher(model_name='gpt-4o')
     for link in potential_links:
-        async def fetch_response():
-            response = await model.predict(f"Should we click this link: {link.text}?")
-            return {'response': response}
-
-        cached_response = await get_cached_data(link.text, fetch_response)
+        cached_response = await get_cached_data(link.text, lambda: fetcher.fetch_decision(link.text))
         response = cached_response['response']
         if response.lower() == "yes":
             await page.click_link(link=link)

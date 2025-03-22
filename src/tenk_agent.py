@@ -33,6 +33,8 @@ async def download_10k_reports(browser_context, company_name, num_reports=5):
     potential_links = await page.find_links()
 
     for link in potential_links:
+        # Use OpenAI inference to determine which link we should be clicking
+        # instead of guessing keywords. AI!
         if any(keyword in link.text.lower() for keyword in ["investor", "financials", "reports", "10-K"]):
             await page.click_link(link=link)
             break

@@ -34,9 +34,8 @@ async def download_10k_reports(browser_context, company_name, num_reports=5):
     # Use inference to navigate to the financial reporting or investor relations page
     potential_links = await page.find_links()
 
-    fetcher = LinkDecisionFetcher(model_name='gpt-4o')
     for link in potential_links:
-        cached_response = await make_llm_call_with_cache('link_decision', link.text, lambda: fetcher.fetch_decision(link.text))
+        cached_response = await make_llm_call_with_cache('link_decision', link.text)
         response = cached_response['response']
         if response.lower() == "yes":
             await page.click_link(link=link)

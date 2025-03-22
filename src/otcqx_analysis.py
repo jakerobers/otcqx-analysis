@@ -15,9 +15,8 @@ async def get_company_embeddings(company_names):
     os.makedirs('cache', exist_ok=True)
 
     embeddings = []
-    fetcher = EmbeddingFetcher(api_key=os.getenv('OPENAI_API_KEY'))
     for name in tqdm(company_names, desc="Generating Embeddings"):
-        cached = await make_llm_call_with_cache('embedding', name, lambda: fetcher.fetch_embedding(name))
+        cached = await make_llm_call_with_cache('embedding', name)
         embeddings.append(cached['embedding'])
     return np.array(embeddings)
 

@@ -15,13 +15,12 @@ async def make_llm_call_with_cache(identifier, input_data, cache_dir='cache'):
 
     if identifier == 'embedding':
         fetcher = EmbeddingFetcher(api_key=os.getenv('OPENAI_API_KEY'))
-        data = await fetcher.fetch(input_data)
-    elif identifier == 'link_decision':
+    elif identifier == 'fin_link_decision':
         fetcher = LinkDecisionFetcher(model_name='gpt-4o')
-        data = await fetcher.fetch(input_data)
     else:
         raise ValueError(f"Unknown identifier: {identifier}")
 
+    data = await fetcher.fetch(input_data)
     cache_data(f"{identifier}:{key}", data, cache_dir)
     return data
 

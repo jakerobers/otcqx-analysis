@@ -35,7 +35,7 @@ async def download_10k_reports(browser_context, company_name, num_reports=5):
     potential_links = await page.find_links()
 
     fetcher = DetermineFinancialLink()
-    cached_response = await make_llm_call_with_cache('link_decision', potential_links)
+    cached_response = await make_llm_call_with_cache('fin_link_decision', potential_links)
     response = cached_response['response']
     await page.click_link(link=response)
 

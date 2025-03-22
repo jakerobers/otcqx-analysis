@@ -23,20 +23,6 @@ async def make_llm_call_with_cache(identifier, key, cache_dir='cache'):
 
     cache_data(f"{identifier}:{key}", data, cache_dir)
     return data
-    os.makedirs(cache_dir, exist_ok=True)
-    hash_key = hashlib.sha256(f"{identifier}:{key}".encode()).hexdigest()
-    cache_path = os.path.join(cache_dir, f"{hash_key}.json")
-    if os.path.exists(cache_path):
-        with open(cache_path, 'r') as f:
-            return json.load(f)
-    data = None
-    if not os.path.exists(cache_path):
-        data = await fetch_data_async()
-        cache_data(key, data, cache_dir)
-    else:
-        with open(cache_path, 'r') as f:
-            data = json.load(f)
-    return data
 
 def cache_data(key, data, cache_dir='cache'):
     os.makedirs(cache_dir, exist_ok=True)

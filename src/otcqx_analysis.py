@@ -15,15 +15,12 @@ def get_company_embeddings(company_names):
 
     embeddings = []
     for name in tqdm(company_names, desc="Generating Embeddings"):
-        cached = get_cached_data(name)
-        if cached:
-            embeddings.append(cached['embedding'])
-        else:
-            response = client.embeddings.create(input=name,
-            model="text-embedding-3-small")
-            embedding = response.data[0].embedding
-            embeddings.append(embedding)
-            cache_data(name, {'name': name, 'embedding': embedding})
+        async def fetch_embedding():
+            response = client.embeddings.create(input=name, model="text-embedding-3-small")
+            return {'name': name, 'embedding': response.data[0].embedding}
+
+        cached = await get_cached_data(name, fetch_embedding)
+        embeddings.append(cached['embedding'])
     return np.array(embeddings)
 
 def process_and_cluster_companies():

@@ -35,12 +35,12 @@ async def download_10k_reports(browser_context, company_name, num_reports=5):
 
     model = ChatOpenAI(model='gpt-4o')
     for link in potential_links:
-        cached_response = get_cached_data(link.text)
-        if cached_response:
-            response = cached_response['response']
-        else:
+        async def fetch_response():
             response = await model.predict(f"Should we click this link: {link.text}?")
-            cache_data(link.text, {'response': response})
+            return {'response': response}
+
+        cached_response = await get_cached_data(link.text, fetch_response)
+        response = cached_response['response']
         if response.lower() == "yes":
             await page.click_link(link=link)
             break

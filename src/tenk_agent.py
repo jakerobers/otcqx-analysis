@@ -32,10 +32,10 @@ async def download_10k_reports(browser_context, company_name, num_reports=5):
     # Use inference to navigate to the financial reporting or investor relations page
     potential_links = await page.find_links()
 
+    model = ChatOpenAI(model='gpt-4o')
     for link in potential_links:
-        # Use OpenAI inference to determine which link we should be clicking
-        # instead of guessing keywords. AI!
-        if any(keyword in link.text.lower() for keyword in ["investor", "financials", "reports", "10-K"]):
+        response = await model.predict(f"Should we click this link: {link.text}?")
+        if response.lower() == "yes":
             await page.click_link(link=link)
             break
 

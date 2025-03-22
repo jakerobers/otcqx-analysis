@@ -9,13 +9,21 @@ def download_10k_reports(company_name, num_reports=5):
     """
     # Open a browser session
     with browser.Browser() as b:
-        # Search for the company on Google
+        # Search for the company's main website on Google
         b.go_to("https://www.google.com")
-        b.type(company_name + " site:investor relations", into="q")
+        b.type(company_name, into="q")
         b.submit()
 
-        # Navigate to the company's investor relations page
-        b.click_link(text="Investor Relations")
+        # Click on the first link to go to the company's main website
+        b.click_link(index=0)
+
+        # Use inference to navigate to the financial reporting or investor relations page
+        # This might involve searching for keywords like "investor", "financials", "reports", etc.
+        potential_links = b.find_links()
+        for link in potential_links:
+            if any(keyword in link.text.lower() for keyword in ["investor", "financials", "reports", "10-K"]):
+                b.click_link(link=link)
+                break
 
         # Find and download the 10-K reports
         reports_downloaded = 0

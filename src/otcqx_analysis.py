@@ -4,6 +4,7 @@ import json
 from tqdm import tqdm
 from openai import OpenAI
 from sklearn.cluster import KMeans
+from cache_utils import get_cached_data, cache_data
 import numpy as np
 import os
 
@@ -12,22 +13,9 @@ client = OpenAI(api_key=os.getenv('OPENAI_API_KEY'))
 def get_company_embeddings(company_names):
     os.makedirs('cache', exist_ok=True)
 
-    def get_cached_embedding(name):
-        hash_name = hashlib.sha256(name.encode()).hexdigest()
-        cache_path = os.path.join('cache', f"{hash_name}.json")
-        if os.path.exists(cache_path):
-            with open(cache_path, 'r') as f:
-                return json.load(f)
-        return None
-
-    def cache_embedding(name, embedding):
-        hash_name = hashlib.sha256(name.encode()).hexdigest()
-        cache_path = os.path.join('cache', f"{hash_name}.json")
-        with open(cache_path, 'w') as f:
-            json.dump({'name': name, 'embedding': embedding}, f)
     embeddings = []
     for name in tqdm(company_names, desc="Generating Embeddings"):
-        cached = get_cached_embedding(name)
+        cached = get_cached_data(name)
         if cached:
             embeddings.append(cached['embedding'])
         else:
@@ -35,7 +23,7 @@ def get_company_embeddings(company_names):
             model="text-embedding-3-small")
             embedding = response.data[0].embedding
             embeddings.append(embedding)
-            cache_embedding(name, embedding)
+            cache_data(name, {'name': name, 'embedding': embedding})
     return np.array(embeddings)
 
 def process_and_cluster_companies():

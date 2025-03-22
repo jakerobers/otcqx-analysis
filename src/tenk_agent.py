@@ -3,6 +3,7 @@ import asyncio
 from browser_use import Agent, Controller, ActionResult
 from browser_use.browser.browser import Browser, BrowserConfig
 from langchain_openai import ChatOpenAI
+from cache_utils import get_cached_data, cache_data
 
 # Configure the browser
 browser = Browser(
@@ -34,7 +35,12 @@ async def download_10k_reports(browser_context, company_name, num_reports=5):
 
     model = ChatOpenAI(model='gpt-4o')
     for link in potential_links:
-        response = await model.predict(f"Should we click this link: {link.text}?")
+        cached_response = get_cached_data(link.text)
+        if cached_response:
+            response = cached_response['response']
+        else:
+            response = await model.predict(f"Should we click this link: {link.text}?")
+            cache_data(link.text, {'response': response})
         if response.lower() == "yes":
             await page.click_link(link=link)
             break

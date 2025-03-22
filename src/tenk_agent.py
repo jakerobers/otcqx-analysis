@@ -35,7 +35,7 @@ async def download_10k_reports(browser_context, company_name, num_reports=5):
     potential_links = await page.find_links()
 
     for link in potential_links:
-        cached_response = await make_llm_call_with_cache('link_decision', link.text)
+        cached_response = await make_llm_call_with_cache('link_decision', {'link_text': link.text})
         response = cached_response['response']
         if response.lower() == "yes":
             await page.click_link(link=link)

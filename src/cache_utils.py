@@ -4,8 +4,9 @@ import os
 
 from llm_fetchers import EmbeddingFetcher, LinkDecisionFetcher
 
-async def make_llm_call_with_cache(identifier, key, cache_dir='cache'):
+async def make_llm_call_with_cache(identifier, input_data, cache_dir='cache'):
     os.makedirs(cache_dir, exist_ok=True)
+    key = json.dumps(input_data, sort_keys=True)
     hash_key = hashlib.sha256(f"{identifier}:{key}".encode()).hexdigest()
     cache_path = os.path.join(cache_dir, f"{hash_key}.json")
     if os.path.exists(cache_path):
@@ -14,10 +15,10 @@ async def make_llm_call_with_cache(identifier, key, cache_dir='cache'):
 
     if identifier == 'embedding':
         fetcher = EmbeddingFetcher(api_key=os.getenv('OPENAI_API_KEY'))
-        data = await fetcher.fetch_embedding(key)
+        data = await fetcher.fetch_embedding(input_data['name'])
     elif identifier == 'link_decision':
         fetcher = LinkDecisionFetcher(model_name='gpt-4o')
-        data = await fetcher.fetch_decision(key)
+        data = await fetcher.fetch_decision(input_data['link_text'])
     else:
         raise ValueError(f"Unknown identifier: {identifier}")
 

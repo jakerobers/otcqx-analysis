@@ -16,7 +16,7 @@ async def get_company_embeddings(company_names):
 
     embeddings = []
     for name in tqdm(company_names, desc="Generating Embeddings"):
-        cached = await make_llm_call_with_cache('embedding', name)
+        cached = await make_llm_call_with_cache('embedding', {'name': name})
         embeddings.append(cached['embedding'])
     return np.array(embeddings)
 

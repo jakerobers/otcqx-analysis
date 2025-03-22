@@ -3,7 +3,7 @@ import asyncio
 from browser_use import Agent, Controller, ActionResult
 from browser_use.browser.browser import Browser, BrowserConfig
 from langchain_openai import ChatOpenAI
-from cache_utils import get_cached_data, cache_data
+from cache_utils import make_llm_call_with_cache, cache_data
 from llm_fetchers import LinkDecisionFetcher
 
 # Configure the browser

@@ -4,7 +4,7 @@ from browser_use import Agent, Controller, ActionResult
 from browser_use.browser.browser import Browser, BrowserConfig
 from langchain_openai import ChatOpenAI
 from cache_utils import make_llm_call_with_cache, cache_data
-from llm_fetchers import LinkDecisionFetcher
+from llm_fetchers import DetermineFinancialLink
 
 # Configure the browser
 browser = Browser(
@@ -34,12 +34,10 @@ async def download_10k_reports(browser_context, company_name, num_reports=5):
     # Use inference to navigate to the financial reporting or investor relations page
     potential_links = await page.find_links()
 
-    for link in potential_links:
-        cached_response = await make_llm_call_with_cache('link_decision', {'link_text': link.text})
-        response = cached_response['response']
-        if response.lower() == "yes":
-            await page.click_link(link=link)
-            break
+    fetcher = DetermineFinancialLink()
+    cached_response = await make_llm_call_with_cache('link_decision', potential_links)
+    response = cached_response['response']
+    await page.click_link(link=response)
 
     # Find and download the 10-K reports
     reports_downloaded = 0

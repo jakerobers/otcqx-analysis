@@ -31,7 +31,6 @@ async def dox(input_file, output_file):
         tasks = [fetch_description(company_name) for company_name in company_names]
         descriptions = await asyncio.gather(*tasks)
 
-        # Embed company descriptions
         # Embed company descriptions in batches of 20
         embeddings = []
         embed_semaphore = asyncio.Semaphore(batch_size)
@@ -45,7 +44,7 @@ async def dox(input_file, output_file):
         embeddings = await asyncio.gather(*embed_tasks)
 
         # Cluster the embeddings
-        kmeans = KMeans(n_clusters=5, random_state=0)
+        kmeans = KMeans(n_clusters=13, random_state=0)
         clusters = kmeans.fit_predict(np.array(embeddings))
 
         # Organize companies by cluster

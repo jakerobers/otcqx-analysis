@@ -3,7 +3,7 @@ import os
 import argparse
 import csv
 import asyncio
-from tqdm import tqdm
+from tqdm.asyncio import tqdm
 from sklearn.cluster import KMeans
 import numpy as np
 
@@ -19,11 +19,18 @@ async def dox(input_file, output_file):
         reader = csv.DictReader(csvfile)
         company_names = [row['Security Name'] for row in reader]
 
-        # Fetch company descriptions
+        # Fetch company descriptions in batches of 20
         descriptions = []
-        for company_name in tqdm(company_names, desc="Fetching Descriptions"):
-            description_data = await make_llm_call_with_cache('company_description', company_name)
-            descriptions.append(description_data['description'])
+        batch_size = 20
+        semaphore = asyncio.Semaphore(batch_size)
+
+        async def fetch_description(company_name):
+            async with semaphore:
+                description_data = await make_llm_call_with_cache('company_description', company_name)
+                return description_data['description']
+
+        tasks = [fetch_description(company_name) for company_name in company_names]
+        descriptions = await tqdm.gather(*tasks, desc="Fetching Descriptions")
 
         # Embed company descriptions
         embeddings = []

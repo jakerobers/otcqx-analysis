@@ -6,7 +6,7 @@ from commands.infer_financial_page import infer_financial_page
 from commands.infer_financial_report_url import infer_financial_report_url
 
 
-def main():
+async def main():
     parser = argparse.ArgumentParser(description="OTCQX Analysis Tool")
     subparsers = parser.add_subparsers(dest='command')
 

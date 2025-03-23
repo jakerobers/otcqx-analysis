@@ -2,7 +2,7 @@ import hashlib
 import json
 import os
 
-from llm_fetchers import EmbeddingFetcher, LinkDecisionFetcher
+from llm_fetchers import EmbeddingFetcher, DetermineFinancialLink
 
 async def make_llm_call_with_cache(identifier, input_data, cache_dir='cache'):
     os.makedirs(cache_dir, exist_ok=True)
@@ -16,7 +16,7 @@ async def make_llm_call_with_cache(identifier, input_data, cache_dir='cache'):
     if identifier == 'embedding':
         fetcher = EmbeddingFetcher(api_key=os.getenv('OPENAI_API_KEY'))
     elif identifier == 'fin_link_decision':
-        fetcher = LinkDecisionFetcher(model_name='gpt-4o')
+        fetcher = DetermineFinancialLink(model_name='gpt-4o')
     else:
         raise ValueError(f"Unknown identifier: {identifier}")
 

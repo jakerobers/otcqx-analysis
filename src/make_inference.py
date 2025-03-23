@@ -3,7 +3,7 @@ import hashlib
 import json
 import os
 
-from llm_fetchers import EmbeddingFetcher, DetermineFinancialLink, GetCompanyDescription, URLFetcher
+from fetchers import EmbeddingFetcher, DetermineFinancialLink, GetCompanyDescription, URLFetcher
 
 # Set up logging
 os.makedirs('logs', exist_ok=True)

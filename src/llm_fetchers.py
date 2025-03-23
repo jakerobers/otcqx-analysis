@@ -10,6 +10,7 @@ class FetcherInterface(ABC):
     async def fetch(self, input_data):
         pass
 
+
 class EmbeddingFetcher(FetcherInterface):
     def __init__(self, api_key):
         self.client = OpenAI(api_key=api_key)
@@ -17,6 +18,7 @@ class EmbeddingFetcher(FetcherInterface):
     async def fetch(self, input_data):
         response = self.client.embeddings.create(input=input_data['text'], model="text-embedding-3-small")
         return {'text': input_data['text'], 'embedding': response.data[0].embedding}
+
 
 class DetermineFinancialLink(FetcherInterface):
     def __init__(self, model_name='gpt-4o'):
@@ -32,6 +34,7 @@ class DetermineFinancialLink(FetcherInterface):
         response = await self.model.predict(prompt)
         return {'response': response}
 
+
 class GetCompanyDescription(FetcherInterface):
     def __init__(self, model_name='gpt-4o'):
         self.model = ChatOpenAI(model=model_name)
@@ -45,6 +48,7 @@ class GetCompanyDescription(FetcherInterface):
         response = await self.model.ainvoke(messages)
         return {'company_name': company_name, 'description': response.content}
 
+
 class URLFetcher(FetcherInterface):
     def __init__(self, browser_context):
         self.browser_context = browser_context
@@ -57,15 +61,3 @@ class URLFetcher(FetcherInterface):
         await page.click_link(index=0)
         current_url = await page.url()
         return {'company_name': company_name, 'url': current_url}
-
-    def __init__(self, model_name='gpt-4o'):
-        self.model = ChatOpenAI(model=model_name)
-
-    async def fetch(self, company_name):
-        messages = [
-            ("system", "You are an expert in company identification. Please help the customer with their question."),
-            ("human", company_name)
-        ]
-
-        response = await self.model.ainvoke(messages)
-        return {'company_name': company_name, 'description': response.content}

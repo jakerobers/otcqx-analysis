@@ -5,12 +5,15 @@ import csv
 
 sys.path.append(os.path.join(os.path.dirname(__file__), 'src'))
 from otcqx_analysis import process_and_cluster_companies
+from cache_utils import make_llm_call_with_cache, cache_data
 
 def scrape(input_file):
+    pass
+
+def dox(input_file):
     with open(input_file, newline='') as csvfile:
         reader = csv.DictReader(csvfile)
-        company_names = [row['Security Name'] for row in reader]
-    print("Company names extracted:", company_names)
+        [print(row['Security Name']) for row in reader]
 
 def main():
     parser = argparse.ArgumentParser(description="OTCQX Analysis Tool")
@@ -24,6 +27,8 @@ def main():
 
     if args.command == 'scrape':
         scrape(args.input)
+    elif args.command == 'dox':
+        identify(args.input)
     else:
         return
         # TODO: Implement better clustering algorithm

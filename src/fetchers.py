@@ -36,6 +36,19 @@ class DetermineFinancialLink(FetcherInterface):
         return {'response': response}
 
 
+class Determine10KLink(FetcherInterface):
+    def __init__(self, model_name='gpt-4o'):
+        self.model = ChatOpenAI(model=model_name)
+
+    async def fetch(self, links):
+        prompt = (
+            "From the following list of links, identify the one that most likely leads to a 10-K report. "
+            "Return the link exactly as provided:\n" +
+            "\n".join([f"{link[0]}: {link[1]}" for link in links])
+        )
+        response = await self.model.predict(prompt)
+        return {'link': response}
+
 class GetCompanyDescription(FetcherInterface):
     def __init__(self, model_name='gpt-4o'):
         self.model = ChatOpenAI(model=model_name)

@@ -24,7 +24,7 @@ async def get_url(input_file, limit=None):
         company_names = company_names[:limit]
 
     for company_name in company_names:
-        input_data = {'company_name': company_name}
+        input_data = {'company_name': company_name, 'browser_context': 'default'}
         url_data = await make_inference('url_fetch', input_data)
         current_url = url_data['url']
         print(f"Company: {company_name}, Visited URL: {current_url}")

@@ -58,7 +58,10 @@ class URLFetcher(FetcherInterface):
         async with async_playwright() as p:
             browser = await p.chromium.launch(headless=False)
             page = await browser.new_page()
-            await page.goto("https://www.google.com")
+            query = input_data['company_name']
+            encoded_query = query.replace(' ', '+')
+            search_url = f"https://www.google.com/search?q={encoded_query}"
+            await page.goto(search_url)
 
             # Accept cookies if visible
             try:

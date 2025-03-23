@@ -3,7 +3,7 @@ import logging
 import aiohttp
 from bs4 import BeautifulSoup
 
-async def infer_financial_report_urls(url, limit=None, n=0):
+async def infer_financial_report_urls(url, input_file, limit=None, n=0):
     if n >= 5:
         logging.error(f"Recursion limit reached for URL: {url}")
         return

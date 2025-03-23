@@ -10,6 +10,17 @@ sys.path.append(os.path.join(os.path.dirname(__file__), 'src'))
 from otcqx_analysis import process_and_cluster_companies
 from make_inference import make_inference, cache_data
 
+async def get_url(company_name):
+    """
+    Fetches the URL for a given company's financial documents.
+
+    :param company_name: Name of the company to search for.
+    """
+    input_data = {'company_name': company_name}
+    url_data = await make_inference('url_fetch', input_data)
+    current_url = url_data['url']
+    print(f"Visited URL: {current_url}")
+
 def scrape(input_file):
     pass
 
@@ -75,13 +86,16 @@ async def main():
     dox_parser.add_argument('-i', '--input', required=True, help='Input file path')
     dox_parser.add_argument('-o', '--output', required=True, help='Output file path')
 
-    args = parser.parse_args()
+    # Get URL command
+    get_url_parser = subparsers.add_parser('get-url', help='Fetch the URL for a company\'s financial documents')
+    get_url_parser.add_argument('-c', '--company', required=True, help='Company name')
 
     if args.command == 'scrape':
         scrape(args.input)
     elif args.command == 'dox':
         await dox(args.input, args.output)
-    else:
+    elif args.command == 'get-url':
+        await get_url(args.company)
         return
         # TODO: Implement better clustering algorithm
         process_and_cluster_companies()

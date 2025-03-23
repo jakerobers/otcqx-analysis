@@ -43,7 +43,8 @@ Overall the subcommands generally run in the order of
    downstream tasks like fetching the companies financial reports.
 3. get-fin-url: resolves the full url path to the companies financial
    documents. Requires the get-domain successfully resolved.
-4. download-fin-docs: downloads the latest financial documents for the
+4. get-url: fetches the URL for the company's financial documents.
+5. download-fin-docs: downloads the latest financial documents for the
    company. Requires that the get-fin-url successfully resolved.
 
 ```bash

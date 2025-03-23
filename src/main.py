@@ -14,7 +14,7 @@ from cache_utils import make_llm_call_with_cache, cache_data
 def scrape(input_file):
     pass
 
-async def dox(input_file):
+async def dox(input_file, output_file):
     with open(input_file, newline='') as csvfile:
         reader = csv.DictReader(csvfile)
         company_names = [row['Security Name'] for row in reader]
@@ -40,8 +40,9 @@ async def dox(input_file):
         for company_name, cluster in zip(company_names, clusters):
             cluster_dict[cluster].append(company_name)
 
-        # Write to stdout in CSV format
-        csv_writer = csv.writer(sys.stdout)
+        # Write to output file in CSV format
+        with open(output_file, 'w', newline='') as csvfile:
+            csv_writer = csv.writer(csvfile)
         csv_writer.writerow([f"Cluster {i}" for i in range(kmeans.n_clusters)])
         max_length = max(len(names) for names in cluster_dict.values())
         for i in range(max_length):
@@ -60,13 +61,14 @@ async def main():
     # Dox command
     dox_parser = subparsers.add_parser('dox', help='Categorizes a list of companies by industry')
     dox_parser.add_argument('-i', '--input', required=True, help='Input file path')
+    dox_parser.add_argument('-o', '--output', required=True, help='Output file path')
 
     args = parser.parse_args()
 
     if args.command == 'scrape':
         scrape(args.input)
     elif args.command == 'dox':
-        await dox(args.input)
+        await dox(args.input, args.output)
     else:
         return
         # TODO: Implement better clustering algorithm

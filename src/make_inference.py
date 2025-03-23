@@ -44,10 +44,7 @@ async def make_inference(identifier, input_data, cache_dir='cache', use_cache=Tr
 
 def cache_data(data, input_data, cache_path):
     os.makedirs(os.path.dirname(cache_path), exist_ok=True)
-    data_to_cache = {
-        'input_data': input_data,
-        'output_data': data
-    }
+    data_to_cache = {**input_data, **data}
     print(f"save key: {cache_path}")
     with open(cache_path, 'w') as f:
         json.dump(data_to_cache, f)

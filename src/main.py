@@ -123,6 +123,7 @@ async def main():
         await infer_financial_page(args.company)
     elif args.command == 'infer-fin-report-url':
         await infer_financial_report_url(args.company)
+    elif args.command == 'get-url':
         await get_url(args.company)
 
 if __name__ == "__main__":

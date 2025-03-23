@@ -39,7 +39,9 @@ This tool provides a set of commands that should be ran in a pipeline.
 Overall the subcommands generally run in the order of
 1. dox: get a brief understanding of the company. Can be used for grouping
    company by vertical.
-2. get-domain: resolves the company's domain name. The first step towards
+2. infer-fin-page: infers the financial reporting page (e.g., investor relations) of the company.
+3. infer-fin-report-url: infers the financial report URL (e.g., a URL to a PDF document of a specific 10-K report).
+4. get-domain: resolves the company's domain name. The first step towards
    downstream tasks like fetching the companies financial reports.
 3. get-fin-url: resolves the full url path to the companies financial
    documents. Requires the get-domain successfully resolved.

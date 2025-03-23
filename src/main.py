@@ -73,7 +73,23 @@ async def dox(input_file, output_file):
                 csv_writer.writerow(row)
 
 
-async def main():
+async def infer_financial_page(company_name):
+    """
+    Infers the financial reporting page (e.g., investor relations) of the company.
+
+    :param company_name: Name of the company to search for.
+    """
+    # Stub implementation
+    print(f"Inferred financial page for {company_name}")
+
+async def infer_financial_report_url(company_name):
+    """
+    Infers the financial report URL (e.g., a URL to a PDF document of a specific 10-K report).
+
+    :param company_name: Name of the company to search for.
+    """
+    # Stub implementation
+    print(f"Inferred financial report URL for {company_name}")
     parser = argparse.ArgumentParser(description="OTCQX Analysis Tool")
     subparsers = parser.add_subparsers(dest='command')
 
@@ -86,7 +102,13 @@ async def main():
     dox_parser.add_argument('-i', '--input', required=True, help='Input file path')
     dox_parser.add_argument('-o', '--output', required=True, help='Output file path')
 
-    # Get URL command
+    # Infer financial page command
+    infer_fin_page_parser = subparsers.add_parser('infer-fin-page', help='Infer the financial reporting page of the company')
+    infer_fin_page_parser.add_argument('-c', '--company', required=True, help='Company name')
+
+    # Infer financial report URL command
+    infer_fin_report_url_parser = subparsers.add_parser('infer-fin-report-url', help='Infer the financial report URL of the company')
+    infer_fin_report_url_parser.add_argument('-c', '--company', required=True, help='Company name')
     get_url_parser = subparsers.add_parser('get-url', help='Fetch the URL for a company\'s financial documents')
     get_url_parser.add_argument('-c', '--company', required=True, help='Company name')
 
@@ -96,7 +118,10 @@ async def main():
         scrape(args.input)
     elif args.command == 'dox':
         await dox(args.input, args.output)
-    elif args.command == 'get-url':
+    elif args.command == 'infer-fin-page':
+        await infer_financial_page(args.company)
+    elif args.command == 'infer-fin-report-url':
+        await infer_financial_report_url(args.company)
         await get_url(args.company)
 
 if __name__ == "__main__":

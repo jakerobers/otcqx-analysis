@@ -35,7 +35,16 @@ company's website and retrieve the desired documents.
 
 ## Usage
 
-To run the 10-K report downloader, execute the following command:
+This tool provides a set of commands that should be ran in a pipeline.
+Overall the subcommands generally run in the order of
+1. dox: get a brief understanding of the company. Can be used for grouping
+   company by vertical.
+2. get-domain: resolves the company's domain name. The first step towards
+   downstream tasks like fetching the companies financial reports.
+3. get-fin-url: resolves the full url path to the companies financial
+   documents. Requires the get-domain successfully resolved.
+4. download-fin-docs: downloads the latest financial documents for the
+   company. Requires that the get-fin-url successfully resolved.
 
 ```bash
 python src/main.py agent -i "data/index/Stock_Screener.csv"

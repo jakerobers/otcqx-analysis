@@ -27,7 +27,7 @@ async def dox(input_file):
         # Embed company descriptions
         embeddings = []
         for description in tqdm(descriptions, desc="Embedding Descriptions"):
-            embedding_data = await make_llm_call_with_cache('embedding', {'text': description, 'name': ''})
+            embedding_data = await make_llm_call_with_cache('embedding', {'text': description})
             embeddings.append(embedding_data['embedding'])
 
         # Cluster the embeddings

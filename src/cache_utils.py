@@ -1,10 +1,20 @@
+import logging
 import hashlib
 import json
 import os
 
 from llm_fetchers import EmbeddingFetcher, DetermineFinancialLink, GetCompanyDescription
 
+# Set up logging
+os.makedirs('logs', exist_ok=True)
+logging.basicConfig(
+    filename='logs/llm_calls.log',
+    level=logging.INFO,
+    format='%(asctime)s - %(levelname)s - %(message)s'
+)
+
 async def make_llm_call_with_cache(identifier, input_data, cache_dir='cache'):
+    logging.info(f"Making LLM call with identifier: {identifier}, input_data: {input_data}")
     os.makedirs(cache_dir, exist_ok=True)
     key = json.dumps(input_data, sort_keys=True)
     hash_key = hashlib.sha256(f"{identifier}:{key}".encode()).hexdigest()

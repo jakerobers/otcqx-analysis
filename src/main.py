@@ -79,14 +79,23 @@ async def dox(input_file, output_file):
                 csv_writer.writerow(row)
 
 
-async def infer_financial_page(company_name):
+async def infer_financial_page(input_file, limit=None):
     """
-    Infers the financial reporting page (e.g., investor relations) of the company.
+    Infers the financial reporting page (e.g., investor relations) for a list of companies from a CSV file.
 
-    :param company_name: Name of the company to search for.
+    :param input_file: Path to the input CSV file containing company names.
+    :param limit: Optional limit on the number of companies to process.
     """
-    # Stub implementation
-    print(f"Inferred financial page for {company_name}")
+    with open(input_file, newline='') as csvfile:
+        reader = csv.DictReader(csvfile)
+        company_names = [row['Security Name'] for row in reader]
+
+    if limit is not None:
+        company_names = company_names[:limit]
+
+    for company_name in company_names:
+        # Stub implementation
+        print(f"Inferred financial page for {company_name}")
 
 
 async def infer_financial_report_url(company_name):
@@ -111,7 +120,8 @@ async def main():
 
     # Infer financial page command
     infer_fin_page_parser = subparsers.add_parser('infer-fin-page', help='Infer the financial reporting page of the company')
-    infer_fin_page_parser.add_argument('-c', '--company', required=True, help='Company name')
+    infer_fin_page_parser.add_argument('-i', '--input', required=True, help='Input file path')
+    infer_fin_page_parser.add_argument('-l', '--limit', type=int, help='Limit the number of companies to process')
 
     # Infer financial report URL command
     infer_fin_report_url_parser = subparsers.add_parser('infer-fin-report-url', help='Infer the financial report URL of the company')
@@ -127,7 +137,7 @@ async def main():
     if args.command == 'dox':
         await dox(args.input, args.output)
     elif args.command == 'infer-fin-page':
-        await infer_financial_page(args.company)
+        await infer_financial_page(args.input, args.limit)
     elif args.command == 'infer-fin-report-url':
         await infer_financial_report_url(args.company)
     elif args.command == 'get-url':

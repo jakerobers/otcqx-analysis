@@ -37,7 +37,9 @@ async def dox(input_file):
         for company_name, cluster in zip(company_names, clusters):
             print(f"Company: {company_name}, Cluster: {cluster}")
 
-def main():
+import asyncio
+
+async def main():
     parser = argparse.ArgumentParser(description="OTCQX Analysis Tool")
     subparsers = parser.add_subparsers(dest='command')
 
@@ -57,4 +59,4 @@ def main():
         process_and_cluster_companies()
 
 if __name__ == "__main__":
-    main()
+    asyncio.run(main())

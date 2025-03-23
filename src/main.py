@@ -117,6 +117,8 @@ async def main():
     # Infer financial report URL command
     infer_fin_report_url_parser = subparsers.add_parser('infer-fin-report-url', help='Infer the financial report URL of the company')
     infer_fin_report_url_parser.add_argument('-c', '--company', required=True, help='Company name')
+
+    # Fetch domain for a company
     get_url_parser = subparsers.add_parser('get-url', help='Fetch the URL for a company\'s financial documents')
     get_url_parser.add_argument('-i', '--input', required=True, help='Input file path')
     get_url_parser.add_argument('-l', '--limit', type=int, help='Limit the number of companies to process')

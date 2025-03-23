@@ -23,14 +23,9 @@ async def download_10k_reports(browser_context, company_name, num_reports=5):
     :param company_name: Name of the company to search for.
     :param num_reports: Number of reports to download. Default is 5.
     """
-    page = await browser_context.get_current_page()
-    await page.goto("https://www.google.com")
-    await page.type(company_name, into="q")
-    await page.submit()
-
-    # Click on the first link to go to the company's main website
-    await page.click_link(index=0)
-    current_url = await page.url()
+    input_data = {'company_name': company_name, 'browser_context': browser_context}
+    url_data = await make_inference('url_fetch', input_data)
+    current_url = url_data['url']
     print(f"Visited URL: {current_url}")
 
     # # Use inference to navigate to the financial reporting or investor relations page

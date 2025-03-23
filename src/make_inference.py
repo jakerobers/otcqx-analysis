@@ -29,7 +29,8 @@ async def make_inference(identifier, input_data, cache_dir='cache', use_cache=Tr
         fetcher = DetermineFinancialLink(model_name='gpt-4o')
     elif identifier == 'company_description':
         fetcher = GetCompanyDescription(model_name='gpt-4o')
-    else:
+    elif identifier == 'url_fetch':
+        fetcher = URLFetcher(browser_context=input_data['browser_context'])
         raise ValueError(f"Unknown identifier: {identifier}")
 
     logging.info(f"Inference request: {identifier}, input_data: {input_data}")

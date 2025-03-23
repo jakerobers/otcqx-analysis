@@ -17,7 +17,7 @@ async def get_company_embeddings(company_names):
     embeddings = []
     for name in tqdm(company_names, desc="Generating Embeddings"):
         # Instead of embedding the company name, we should be embedding its description
-        # cached = await make_inference('embedding', {'text': name})
+        cached = await make_inference('embedding', {'text': name})
         embeddings.append(cached['embedding'])
     return np.array(embeddings)
 

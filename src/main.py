@@ -8,7 +8,7 @@ import numpy as np
 
 sys.path.append(os.path.join(os.path.dirname(__file__), 'src'))
 from otcqx_analysis import process_and_cluster_companies
-from cache_utils import make_inference, cache_data
+from make_inference import make_inference, cache_data
 
 def scrape(input_file):
     pass

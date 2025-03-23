@@ -3,7 +3,7 @@ import asyncio
 from browser_use import Agent, Controller, ActionResult
 from browser_use.browser.browser import Browser, BrowserConfig
 from langchain_openai import ChatOpenAI
-from cache_utils import make_inference, cache_data
+from make_inference import make_inference, cache_data
 from llm_fetchers import DetermineFinancialLink
 
 # Configure the browser

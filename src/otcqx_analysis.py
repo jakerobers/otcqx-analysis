@@ -4,7 +4,7 @@ import json
 from tqdm import tqdm
 from openai import OpenAI
 from sklearn.cluster import KMeans
-from cache_utils import make_inference, cache_data
+from make_inference import make_inference, cache_data
 from llm_fetchers import EmbeddingFetcher
 import numpy as np
 import os

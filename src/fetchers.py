@@ -1,6 +1,4 @@
 from abc import ABC, abstractmethod
-from browser_use import Agent, Controller, ActionResult
-from browser_use.browser.browser import Browser, BrowserConfig
 from openai import OpenAI
 from langchain_openai import ChatOpenAI
 import os
@@ -52,17 +50,17 @@ class GetCompanyDescription(FetcherInterface):
 
 
 class URLFetcher(FetcherInterface):
-    def __init__(self):
-        pass
+    def __init__(self, model_name='gpt-4o'):
+        self.model = ChatOpenAI(model=model_name)
 
     async def fetch(self, input_data):
         company_name = input_data['company_name']
         prompt = f"Please provide the official website URL for the company named '{company_name}'."
-        
+
         response = await self.model.predict(prompt)
-        
+
         # Extract URL from the response using a regex pattern
         url_match = re.search(r'(https?://[^\s]+)', response)
         url = url_match.group(0) if url_match else None
-        
+
         return {'company_name': company_name, 'url': url}

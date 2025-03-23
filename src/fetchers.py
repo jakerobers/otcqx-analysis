@@ -56,8 +56,8 @@ class URLFetcher(FetcherInterface):
     async def fetch(self, input_data):
         company_name = input_data['company_name']
         messages = [
-            ("system", "You are an expert in identifying official company websites. Please assist the customer with their query."),
-            ("human", f"Please provide the official website URL for the company named '{company_name}'.")
+            ("system", "You are an expert in identifying official company websites. Provide the official website URL for the given company name."),
+            ("human", company_name)
         ]
 
         response = await self.model.ainvoke(messages)

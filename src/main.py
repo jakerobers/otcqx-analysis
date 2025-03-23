@@ -3,7 +3,6 @@ import os
 import argparse
 import csv
 import asyncio
-from tqdm.asyncio import tqdm
 from sklearn.cluster import KMeans
 import numpy as np
 
@@ -30,7 +29,7 @@ async def dox(input_file, output_file):
                 return description_data['description']
 
         tasks = [fetch_description(company_name) for company_name in company_names]
-        descriptions = await tqdm.gather(*tasks, desc="Fetching Descriptions")
+        descriptions = await asyncio.gather(*tasks)
 
         # Embed company descriptions
         # Embed company descriptions in batches of 20
@@ -43,7 +42,7 @@ async def dox(input_file, output_file):
                 return embedding_data['embedding']
 
         embed_tasks = [embed_description(description) for description in descriptions]
-        embeddings = await tqdm.gather(*embed_tasks, desc="Embedding Descriptions")
+        embeddings = await asyncio.gather(*embed_tasks)
 
         # Cluster the embeddings
         kmeans = KMeans(n_clusters=5, random_state=0)

@@ -17,7 +17,6 @@ async def make_inference(identifier, input_data, cache_dir='cache', use_cache=Tr
     os.makedirs(cache_dir, exist_ok=True)
     input_data['_key'] = identifier
     key = json.dumps(input_data, sort_keys=True)
-    key = json.dumps(data, sort_keys=True)
     hash_key = hashlib.sha256(key.encode()).hexdigest()
     cache_path = os.path.join(cache_dir, f"{hash_key}.json")
     print(f"fetch key: {cache_path}")

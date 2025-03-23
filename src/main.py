@@ -90,6 +90,7 @@ async def infer_financial_report_url(company_name):
     """
     # Stub implementation
     print(f"Inferred financial report URL for {company_name}")
+async def main():
     parser = argparse.ArgumentParser(description="OTCQX Analysis Tool")
     subparsers = parser.add_subparsers(dest='command')
 

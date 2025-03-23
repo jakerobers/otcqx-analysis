@@ -4,12 +4,13 @@ from browser_use.browser.browser import Browser, BrowserConfig
 from openai import OpenAI
 from langchain_openai import ChatOpenAI
 import os
-from playwright.async_api import async_playwright
+import re
+from langchain_openai import ChatOpenAI
 
 class FetcherInterface(ABC):
     @abstractmethod
     async def fetch(self, input_data):
-        pass
+        self.model = ChatOpenAI(model='gpt-4o')
 
 
 class EmbeddingFetcher(FetcherInterface):
@@ -55,23 +56,13 @@ class URLFetcher(FetcherInterface):
         pass
 
     async def fetch(self, input_data):
-        async with async_playwright() as p:
-            browser = await p.chromium.launch(headless=False)
-            page = await browser.new_page()
-            query = input_data['company_name']
-            encoded_query = query.replace(' ', '+')
-            search_url = f"https://www.google.com/search?q={encoded_query}"
-            await page.goto(search_url)
-
-            # Accept cookies if visible
-            try:
-                await page.click('#L2AGLb', timeout=2000)
-            except:
-                pass
-
-            await page.wait_for_selector('h3')
-            element = await page.query_selector('h3')
-            link = await element.evaluate("el => el.closest('a').href")
-
-            await browser.close()
-            return {'company_name': input_data['company_name'], 'url': link}
+        company_name = input_data['company_name']
+        prompt = f"Please provide the official website URL for the company named '{company_name}'."
+        
+        response = await self.model.predict(prompt)
+        
+        # Extract URL from the response using a regex pattern
+        url_match = re.search(r'(https?://[^\s]+)', response)
+        url = url_match.group(0) if url_match else None
+        
+        return {'company_name': company_name, 'url': url}

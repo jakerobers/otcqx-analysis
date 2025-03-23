@@ -4,6 +4,7 @@ from browser_use.browser.browser import Browser, BrowserConfig
 from openai import OpenAI
 from langchain_openai import ChatOpenAI
 import os
+from playwright.async_api import async_playwright
 
 class FetcherInterface(ABC):
     @abstractmethod
@@ -54,10 +55,23 @@ class URLFetcher(FetcherInterface):
         self.browser_context = browser_context
 
     async def fetch(self, company_name):
-        page = await self.browser_context.get_current_page()
-        await page.goto("https://www.google.com")
-        await page.type(company_name, into="q")
-        await page.submit()
-        await page.click_link(index=0)
-        current_url = await page.url()
-        return {'company_name': company_name, 'url': current_url}
+        async with async_playwright() as p:
+            browser = await p.chromium.launch(headless=True)
+            page = await browser.new_page()
+            await page.goto("https://www.google.com")
+
+            # Accept cookies if visible
+            try:
+                await page.click('#L2AGLb', timeout=2000)
+            except:
+                pass
+
+            await page.fill('input[name="q"]', company_name)
+            await page.keyboard.press('Enter')
+
+            await page.wait_for_selector('h3')
+            element = await page.query_selector('h3')
+            link = await element.evaluate("el => el.closest('a').href")
+
+            await browser.close()
+            return {'company_name': company_name, 'url': link}

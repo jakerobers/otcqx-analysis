@@ -1,3 +1,4 @@
+from abc import ABC, abstractmethod
 from browser_use import Agent, Controller, ActionResult
 from browser_use.browser.browser import Browser, BrowserConfig
 from openai import OpenAI

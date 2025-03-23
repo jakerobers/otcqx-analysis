@@ -1,6 +1,7 @@
 from abc import ABC, abstractmethod
 from openai import OpenAI
 from langchain_openai import ChatOpenAI
+import aiohttp
 import os
 import re
 from langchain_openai import ChatOpenAI
@@ -49,7 +50,12 @@ class GetCompanyDescription(FetcherInterface):
         return {'company_name': company_name, 'description': response.content}
 
 
-class URLFetcher(FetcherInterface):
+class HTTPFetcher(FetcherInterface):
+    async def fetch(self, url):
+        async with aiohttp.ClientSession() as session:
+            async with session.get(url) as response:
+                html_content = await response.text()
+        return {'url': url, 'content': html_content}
     def __init__(self, model_name='gpt-4o-mini-search-preview'):
         self.model = ChatOpenAI(model=model_name)
 

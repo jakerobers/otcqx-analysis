@@ -1,6 +1,6 @@
 import csv
 import logging
-import aiohttp
+from make_inference import make_inference
 from bs4 import BeautifulSoup
 from commands.get_url import get_url
 
@@ -23,9 +23,8 @@ async def _infer_financial_report_url(url_stack):
         logger.error(f"Recursion limit reached. Trace: {url_stack}")
         return
 
-    async with aiohttp.ClientSession() as session:
-        async with session.get(url) as response:
-            html_content = await response.text()
+    response = await make_inference('http_fetch', {'url': url})
+    html_content = response['content']
 
     soup = BeautifulSoup(html_content, 'html.parser')
     links = [(a.get('href'), a.text) for a in soup.find_all('a', href=True)]

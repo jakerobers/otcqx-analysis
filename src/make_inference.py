@@ -27,7 +27,8 @@ async def make_inference(identifier, input_data, cache_dir='cache', use_cache=Tr
         fetcher = GetCompanyDescription(model_name='gpt-4o')
     elif identifier == 'url_fetch':
         fetcher = URLFetcher()
-    else:
+    elif identifier == 'http_fetch':
+        fetcher = HTTPFetcher()
         raise ValueError(f"Unknown identifier: {identifier}")
 
     logger.info(f"Inference request: {identifier}, input_data: {input_data}")

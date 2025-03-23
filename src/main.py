@@ -2,6 +2,7 @@ import sys
 import os
 import argparse
 import csv
+import asyncio
 from tqdm import tqdm
 from sklearn.cluster import KMeans
 import numpy as np
@@ -47,7 +48,6 @@ async def dox(input_file):
             row = [cluster_dict[cluster][i] if i < len(cluster_dict[cluster]) else '' for cluster in range(kmeans.n_clusters)]
             csv_writer.writerow(row)
 
-import asyncio
 
 async def main():
     parser = argparse.ArgumentParser(description="OTCQX Analysis Tool")

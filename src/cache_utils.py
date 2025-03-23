@@ -13,12 +13,12 @@ logging.basicConfig(
     format='%(asctime)s - %(levelname)s - %(message)s'
 )
 
-async def make_llm_call_with_cache(identifier, input_data, cache_dir='cache'):
+async def make_inference(identifier, input_data, cache_dir='cache', use_cache=True):
     os.makedirs(cache_dir, exist_ok=True)
     key = json.dumps(input_data, sort_keys=True)
     hash_key = hashlib.sha256(f"{identifier}:{key}".encode()).hexdigest()
     cache_path = os.path.join(cache_dir, f"{hash_key}.json")
-    if os.path.exists(cache_path):
+    if use_cache and os.path.exists(cache_path):
         with open(cache_path, 'r') as f:
             logging.info(f"Cached inference: {identifier}, input_data: {input_data}")
             return json.load(f)

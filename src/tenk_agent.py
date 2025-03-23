@@ -3,7 +3,7 @@ import asyncio
 from browser_use import Agent, Controller, ActionResult
 from browser_use.browser.browser import Browser, BrowserConfig
 from langchain_openai import ChatOpenAI
-from cache_utils import make_llm_call_with_cache, cache_data
+from cache_utils import make_inference, cache_data
 from llm_fetchers import DetermineFinancialLink
 
 # Configure the browser
@@ -35,7 +35,7 @@ async def download_10k_reports(browser_context, company_name, num_reports=5):
     # potential_links = await page.find_links()
 
     # fetcher = DetermineFinancialLink()
-    # cached_response = await make_llm_call_with_cache('fin_link_decision', potential_links)
+    # cached_response = await make_inference('fin_link_decision', potential_links)
     # response = cached_response['response']
     # await page.click_link(link=response)
 

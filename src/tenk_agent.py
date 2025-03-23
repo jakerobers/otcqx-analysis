@@ -31,23 +31,23 @@ async def download_10k_reports(browser_context, company_name, num_reports=5):
     # Click on the first link to go to the company's main website
     await page.click_link(index=0)
 
-    # Use inference to navigate to the financial reporting or investor relations page
-    potential_links = await page.find_links()
+    # # Use inference to navigate to the financial reporting or investor relations page
+    # potential_links = await page.find_links()
 
-    fetcher = DetermineFinancialLink()
-    cached_response = await make_llm_call_with_cache('fin_link_decision', potential_links)
-    response = cached_response['response']
-    await page.click_link(link=response)
+    # fetcher = DetermineFinancialLink()
+    # cached_response = await make_llm_call_with_cache('fin_link_decision', potential_links)
+    # response = cached_response['response']
+    # await page.click_link(link=response)
 
-    # Find and download the 10-K reports
-    reports_downloaded = 0
-    for link in await page.find_links(text="10-K"):
-        if reports_downloaded >= num_reports:
-            break
-        await page.download(link)
-        reports_downloaded += 1
+    # # Find and download the 10-K reports
+    # reports_downloaded = 0
+    # for link in await page.find_links(text="10-K"):
+    #     if reports_downloaded >= num_reports:
+    #         break
+    #     await page.download(link)
+    #     reports_downloaded += 1
 
-    return ActionResult(extracted_content=f"Downloaded {reports_downloaded} reports for {company_name}.")
+    # return ActionResult(extracted_content=f"Downloaded {reports_downloaded} reports for {company_name}.")
 
 async def main():
     async with await browser.new_context() as context:

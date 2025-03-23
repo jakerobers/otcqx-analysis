@@ -1,3 +1,4 @@
+import logging
 import csv
 import asyncio
 from make_inference import make_inference

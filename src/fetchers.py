@@ -73,7 +73,7 @@ class URLFetcher(FetcherInterface):
         response = await self.model.ainvoke(messages)
 
         # Extract URL from the response content using a regex pattern
-        url_match = re.search(r'(https?://[^\s]+)', response.content)
+        url_match = re.search(r'(https?://[^\s\)]+)', response.content)
         url = url_match.group(0) if url_match else None
 
         return {'company_name': company_name, 'url': url}

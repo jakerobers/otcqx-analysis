@@ -29,3 +29,16 @@ class DetermineFinancialLink(FetcherInterface):
         )
         response = await self.model.predict(prompt)
         return {'response': response}
+
+class GetCompanyDescription(FetcherInterface):
+    def __init__(self, model_name='gpt-4o'):
+        self.model = ChatOpenAI(model=model_name)
+
+    async def fetch(self, company_name):
+        # Implement this function. You should use the following system
+        # prompt:
+        # > You are an expert in company identification. Please help the customer with their question.
+        #
+        # You should also append a human prompt, which is the company_name
+        # AI!
+        pass

@@ -51,10 +51,10 @@ class GetCompanyDescription(FetcherInterface):
 
 
 class URLFetcher(FetcherInterface):
-    def __init__(self, browser_context):
-        self.browser_context = browser_context
+    def __init__(self):
+        pass
 
-    async def fetch(self, company_name):
+    async def fetch(self, input_data):
         async with async_playwright() as p:
             browser = await p.chromium.launch(headless=True)
             page = await browser.new_page()
@@ -66,7 +66,7 @@ class URLFetcher(FetcherInterface):
             except:
                 pass
 
-            await page.fill('input[name="q"]', company_name)
+            await page.fill('input[name="q"]', input_data['company_name'])
             await page.keyboard.press('Enter')
 
             await page.wait_for_selector('h3')
@@ -74,4 +74,4 @@ class URLFetcher(FetcherInterface):
             link = await element.evaluate("el => el.closest('a').href")
 
             await browser.close()
-            return {'company_name': company_name, 'url': link}
+            return {'company_name': input_data['company_name'], 'url': link}

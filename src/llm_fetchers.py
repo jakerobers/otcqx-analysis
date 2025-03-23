@@ -32,6 +32,19 @@ class DetermineFinancialLink(FetcherInterface):
         response = await self.model.predict(prompt)
         return {'response': response}
 
+class GetCompanyDescription(FetcherInterface):
+    def __init__(self, model_name='gpt-4o'):
+        self.model = ChatOpenAI(model=model_name)
+
+    async def fetch(self, company_name):
+        messages = [
+            ("system", "You are an expert in company identification. Please help the customer with their question."),
+            ("human", company_name)
+        ]
+
+        response = await self.model.ainvoke(messages)
+        return {'company_name': company_name, 'description': response.content}
+
 class URLFetcher(FetcherInterface):
     def __init__(self, browser_context):
         self.browser_context = browser_context

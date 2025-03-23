@@ -19,6 +19,7 @@ async def make_llm_call_with_cache(identifier, input_data, cache_dir='cache'):
         fetcher = DetermineFinancialLink(model_name='gpt-4o')
     elif identifier == 'company_description':
         fetcher = GetCompanyDescription(model_name='gpt-4o')
+    else:
         raise ValueError(f"Unknown identifier: {identifier}")
 
     data = await fetcher.fetch(input_data)

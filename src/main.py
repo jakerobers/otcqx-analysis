@@ -21,8 +21,6 @@ async def get_url(company_name):
     current_url = url_data['url']
     print(f"Visited URL: {current_url}")
 
-def scrape(input_file):
-    pass
 
 async def dox(input_file, output_file):
     with open(input_file, newline='') as csvfile:
@@ -94,9 +92,6 @@ async def main():
     parser = argparse.ArgumentParser(description="OTCQX Analysis Tool")
     subparsers = parser.add_subparsers(dest='command')
 
-    # Scrape command
-    scrape_parser = subparsers.add_parser('scrape', help='Scrape company data')
-    scrape_parser.add_argument('-i', '--input', required=True, help='Input file path')
 
     # Dox command
     dox_parser = subparsers.add_parser('dox', help='Categorizes a list of companies by industry')
@@ -115,9 +110,7 @@ async def main():
 
     args = parser.parse_args()
 
-    if args.command == 'scrape':
-        scrape(args.input)
-    elif args.command == 'dox':
+    if args.command == 'dox':
         await dox(args.input, args.output)
     elif args.command == 'infer-fin-page':
         await infer_financial_page(args.company)

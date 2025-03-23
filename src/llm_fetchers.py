@@ -35,10 +35,7 @@ class GetCompanyDescription(FetcherInterface):
         self.model = ChatOpenAI(model=model_name)
 
     async def fetch(self, company_name):
-        # Implement this function. You should use the following system
-        # prompt:
-        # > You are an expert in company identification. Please help the customer with their question.
-        #
-        # You should also append a human prompt, which is the company_name
-        # AI!
-        pass
+        system_prompt = "You are an expert in company identification. Please help the customer with their question."
+        human_prompt = company_name
+        response = await self.model.predict(system_prompt + "\n" + human_prompt)
+        return {'company_name': company_name, 'description': response}

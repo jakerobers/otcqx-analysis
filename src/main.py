@@ -8,7 +8,7 @@ import numpy as np
 
 sys.path.append(os.path.join(os.path.dirname(__file__), 'src'))
 from otcqx_analysis import process_and_cluster_companies
-from cache_utils import make_llm_call_with_cache, cache_data
+from cache_utils import make_inference, cache_data
 
 def scrape(input_file):
     pass
@@ -25,7 +25,7 @@ async def dox(input_file, output_file):
 
         async def fetch_description(company_name):
             async with semaphore:
-                description_data = await make_llm_call_with_cache('company_description', company_name)
+                description_data = await make_inference('company_description', company_name)
                 return description_data['description']
 
         tasks = [fetch_description(company_name) for company_name in company_names]
@@ -37,7 +37,7 @@ async def dox(input_file, output_file):
 
         async def embed_description(description):
             async with embed_semaphore:
-                embedding_data = await make_llm_call_with_cache('embedding', {'text': description})
+                embedding_data = await make_inference('embedding', {'text': description})
                 return embedding_data['embedding']
 
         embed_tasks = [embed_description(description) for description in descriptions]

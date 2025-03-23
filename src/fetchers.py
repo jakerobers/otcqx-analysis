@@ -69,9 +69,6 @@ class URLFetcher(FetcherInterface):
             except:
                 pass
 
-            await page.fill('input[name="q"]', input_data['company_name'])
-            await page.keyboard.press('Enter')
-
             await page.wait_for_selector('h3')
             element = await page.query_selector('h3')
             link = await element.evaluate("el => el.closest('a').href")

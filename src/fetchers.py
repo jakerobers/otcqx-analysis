@@ -51,11 +51,14 @@ class GetCompanyDescription(FetcherInterface):
 
 
 class HTTPFetcher(FetcherInterface):
-    async def fetch(self, url):
+    async def fetch(self, input_data):
         async with aiohttp.ClientSession() as session:
-            async with session.get(url) as response:
+            async with session.get(input_data['url']) as response:
                 html_content = await response.text()
         return {'url': url, 'content': html_content}
+
+
+class URLFetcher(FetcherInterface):
     def __init__(self, model_name='gpt-4o-mini-search-preview'):
         self.model = ChatOpenAI(model=model_name)
 

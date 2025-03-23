@@ -10,16 +10,25 @@ sys.path.append(os.path.join(os.path.dirname(__file__), 'src'))
 from otcqx_analysis import process_and_cluster_companies
 from make_inference import make_inference, cache_data
 
-async def get_url(company_name):
+async def get_url(input_file, limit=None):
     """
-    Fetches the URL for a given company's financial documents.
+    Fetches the URLs for a list of companies' financial documents from a CSV file.
 
-    :param company_name: Name of the company to search for.
+    :param input_file: Path to the input CSV file containing company names.
+    :param limit: Optional limit on the number of companies to process.
     """
-    input_data = {'company_name': company_name}
-    url_data = await make_inference('url_fetch', input_data)
-    current_url = url_data['url']
-    print(f"Visited URL: {current_url}")
+    with open(input_file, newline='') as csvfile:
+        reader = csv.DictReader(csvfile)
+        company_names = [row['Security Name'] for row in reader]
+
+    if limit is not None:
+        company_names = company_names[:limit]
+
+    for company_name in company_names:
+        input_data = {'company_name': company_name}
+        url_data = await make_inference('url_fetch', input_data)
+        current_url = url_data['url']
+        print(f"Company: {company_name}, Visited URL: {current_url}")
 
 
 async def dox(input_file, output_file):
@@ -109,7 +118,8 @@ async def main():
     infer_fin_report_url_parser = subparsers.add_parser('infer-fin-report-url', help='Infer the financial report URL of the company')
     infer_fin_report_url_parser.add_argument('-c', '--company', required=True, help='Company name')
     get_url_parser = subparsers.add_parser('get-url', help='Fetch the URL for a company\'s financial documents')
-    get_url_parser.add_argument('-c', '--company', required=True, help='Company name')
+    get_url_parser.add_argument('-i', '--input', required=True, help='Input file path')
+    get_url_parser.add_argument('-l', '--limit', type=int, help='Limit the number of companies to process')
 
     args = parser.parse_args()
 
@@ -120,7 +130,7 @@ async def main():
     elif args.command == 'infer-fin-report-url':
         await infer_financial_report_url(args.company)
     elif args.command == 'get-url':
-        await get_url(args.company)
+        await get_url(args.input, args.limit)
 
 if __name__ == "__main__":
     asyncio.run(main())

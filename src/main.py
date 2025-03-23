@@ -98,9 +98,6 @@ async def main():
         await dox(args.input, args.output)
     elif args.command == 'get-url':
         await get_url(args.company)
-        return
-        # TODO: Implement better clustering algorithm
-        process_and_cluster_companies()
 
 if __name__ == "__main__":
     asyncio.run(main())

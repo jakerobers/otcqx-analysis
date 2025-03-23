@@ -12,7 +12,7 @@ async def infer_financial_report_urls(url, input_file, limit=None, n=0):
 
     # Placeholder for detecting if the current URL is a financial report
     if "financial-report" in url:
-        print(f"Detected financial report at {url}")
+        logger.info(f"Detected financial report at {url}")
         return
 
     async with aiohttp.ClientSession() as session:
@@ -23,7 +23,7 @@ async def infer_financial_report_urls(url, input_file, limit=None, n=0):
     links = [(a.get('href'), a.text) for a in soup.find_all('a', href=True)]
 
     for link, text in links:
-        print(f"Found link: {link} with text: {text}")
+        logger.info(f"Found link: {link} with text: {text}")
         # Recursive call to process the next URL
         await infer_financial_report_urls(link, limit, n + 1)
     """
@@ -41,4 +41,4 @@ async def infer_financial_report_urls(url, input_file, limit=None, n=0):
 
     for company_name in company_names:
         # Stub implementation
-        print(f"Inferred financial page for {company_name}")
+        logger.info(f"Inferred financial page for {company_name}")

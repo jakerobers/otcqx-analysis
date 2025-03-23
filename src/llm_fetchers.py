@@ -44,6 +44,7 @@ class URLFetcher(FetcherInterface):
         await page.click_link(index=0)
         current_url = await page.url()
         return {'company_name': company_name, 'url': current_url}
+
     def __init__(self, model_name='gpt-4o'):
         self.model = ChatOpenAI(model=model_name)
 

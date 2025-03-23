@@ -39,13 +39,15 @@ async def make_inference(identifier, input_data, cache_dir='cache', use_cache=Tr
 
     logging.info(f"Inference request: {identifier}, input_data: {input_data}")
     data = await fetcher.fetch(input_data)
-    cache_data(data, cache_dir)
+    cache_data(data, input_data, cache_path)
     return data
 
-def cache_data(data, cache_dir='cache'):
-    os.makedirs(cache_dir, exist_ok=True)
-    hash_key = hashlib.sha256(key.encode()).hexdigest()
-    cache_path = os.path.join(cache_dir, f"{hash_key}.json")
+def cache_data(data, input_data, cache_path):
+    os.makedirs(os.path.dirname(cache_path), exist_ok=True)
+    data_to_cache = {
+        'input_data': input_data,
+        'output_data': data
+    }
     print(f"save key: {cache_path}")
     with open(cache_path, 'w') as f:
-        json.dump(data, f)
+        json.dump(data_to_cache, f)

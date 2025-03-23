@@ -7,7 +7,6 @@ from sklearn.cluster import KMeans
 import numpy as np
 
 sys.path.append(os.path.join(os.path.dirname(__file__), 'src'))
-from otcqx_analysis import process_and_cluster_companies
 from make_inference import make_inference, cache_data
 
 async def get_url(input_file, limit=None):

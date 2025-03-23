@@ -57,11 +57,11 @@ async def dox(input_file, output_file):
         # Write to output file in CSV format
         with open(output_file, 'w', newline='') as csvfile:
             csv_writer = csv.writer(csvfile)
-        csv_writer.writerow([f"Cluster {i}" for i in range(kmeans.n_clusters)])
-        max_length = max(len(names) for names in cluster_dict.values())
-        for i in range(max_length):
-            row = [cluster_dict[cluster][i] if i < len(cluster_dict[cluster]) else '' for cluster in range(kmeans.n_clusters)]
-            csv_writer.writerow(row)
+            csv_writer.writerow([f"Cluster {i}" for i in range(kmeans.n_clusters)])
+            max_length = max(len(names) for names in cluster_dict.values())
+            for i in range(max_length):
+                row = [cluster_dict[cluster][i] if i < len(cluster_dict[cluster]) else '' for cluster in range(kmeans.n_clusters)]
+                csv_writer.writerow(row)
 
 
 async def main():

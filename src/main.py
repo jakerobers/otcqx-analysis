@@ -13,7 +13,7 @@ from cache_utils import make_llm_call_with_cache, cache_data
 def scrape(input_file):
     pass
 
-def dox(input_file):
+async def dox(input_file):
     with open(input_file, newline='') as csvfile:
         reader = csv.DictReader(csvfile)
         company_names = [row['Security Name'] for row in reader]
@@ -50,7 +50,7 @@ def main():
     if args.command == 'scrape':
         scrape(args.input)
     elif args.command == 'dox':
-        identify(args.input)
+        await dox(args.input)
     else:
         return
         # TODO: Implement better clustering algorithm

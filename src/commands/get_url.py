@@ -2,6 +2,8 @@ import csv
 import asyncio
 from make_inference import make_inference
 
+logger = logging.getLogger(__name__)
+
 async def get_url(input_file, limit=None):
     """
     Fetches the URLs for a list of companies' financial documents from a CSV file.
@@ -16,8 +18,12 @@ async def get_url(input_file, limit=None):
     if limit is not None:
         company_names = company_names[:limit]
 
+    urls = []
     for company_name in company_names:
         input_data = {'company_name': company_name}
         url_data = await make_inference('url_fetch', input_data)
-        current_url = url_data['url']
-        print(f"Company: {company_name}, Visited URL: {current_url}")
+        url = url_data['url']
+        logger.info(f"Found url {url}")
+        urls.append(url)
+
+    return urls

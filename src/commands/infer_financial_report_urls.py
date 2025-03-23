@@ -2,17 +2,25 @@ import csv
 import logging
 import aiohttp
 from bs4 import BeautifulSoup
+from commands.get_url import get_url
 
 logger = logging.getLogger(__name__)
 
-async def infer_financial_report_urls(url, input_file, limit=None, n=0):
-    if n >= 5:
-        logger.error(f"Recursion limit reached for URL: {url}")
-        return
+async def infer_financial_report_urls(input_file, limit=None):
+    """
+    Infers the financial reporting page (e.g., investor relations) for a list of companies from a CSV file.
 
-    # Placeholder for detecting if the current URL is a financial report
-    if "financial-report" in url:
-        logger.info(f"Detected financial report at {url}")
+    :param input_file: Path to the input CSV file containing company names.
+    :param limit: Optional limit on the number of companies to process.
+    """
+    urls = await get_url(input_file, limit)
+    for company_home_url in urls:
+        financial_document_urls = _infer_financial_report_url([company_home_url])
+
+
+async def _infer_financial_report_url(url_stack):
+    if len(url_stack) >= 5:
+        logger.error(f"Recursion limit reached. Trace: {url_stack}")
         return
 
     async with aiohttp.ClientSession() as session:
@@ -21,24 +29,7 @@ async def infer_financial_report_urls(url, input_file, limit=None, n=0):
 
     soup = BeautifulSoup(html_content, 'html.parser')
     links = [(a.get('href'), a.text) for a in soup.find_all('a', href=True)]
+    logger.info(f"Found links: {links}")
 
-    for link, text in links:
-        logger.info(f"Found link: {link} with text: {text}")
-        # Recursive call to process the next URL
-        await infer_financial_report_urls(link, limit, n + 1)
-    """
-    Infers the financial reporting page (e.g., investor relations) for a list of companies from a CSV file.
-
-    :param input_file: Path to the input CSV file containing company names.
-    :param limit: Optional limit on the number of companies to process.
-    """
-    with open(input_file, newline='') as csvfile:
-        reader = csv.DictReader(csvfile)
-        company_names = [row['Security Name'] for row in reader]
-
-    if limit is not None:
-        company_names = company_names[:limit]
-
-    for company_name in company_names:
-        # Stub implementation
-        logger.info(f"Inferred financial page for {company_name}")
+    # TODO: do an LLM call to find the link that would most likely point
+    # ultimately towards a financial document

@@ -3,6 +3,8 @@ import asyncio
 import logging
 import os
 from commands.get_url import get_url
+from commands.dox import dox
+from commands.infer_financial_report_urls import infer_financial_report_urls
 
 def setup_logging():
     os.makedirs('logs', exist_ok=True)
@@ -11,8 +13,6 @@ def setup_logging():
         level=logging.INFO,
         format='%(asctime)s - %(levelname)s - %(message)s'
     )
-from commands.dox import dox
-from commands.infer_financial_report_urls import infer_financial_report_urls
 
 
 async def main():

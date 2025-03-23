@@ -6,7 +6,6 @@ import os
 from fetchers import EmbeddingFetcher, DetermineFinancialLink, GetCompanyDescription, URLFetcher
 
 logger = logging.getLogger(__name__)
-setup_logging()
 
 async def make_inference(identifier, input_data, cache_dir='cache', use_cache=True):
     os.makedirs(cache_dir, exist_ok=True)

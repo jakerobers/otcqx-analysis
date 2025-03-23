@@ -55,11 +55,14 @@ class URLFetcher(FetcherInterface):
 
     async def fetch(self, input_data):
         company_name = input_data['company_name']
-        prompt = f"Please provide the official website URL for the company named '{company_name}'."
+        messages = [
+            ("system", "You are an expert in identifying official company websites. Please assist the customer with their query."),
+            ("human", f"Please provide the official website URL for the company named '{company_name}'.")
+        ]
 
-        response = await self.model.predict(prompt)
+        response = await self.model.ainvoke(messages)
 
-        # Extract URL from the response using a regex pattern
+        # Extract URL from the response content using a regex pattern
         url_match = re.search(r'(https?://[^\s]+)', response)
         url = url_match.group(0) if url_match else None
 

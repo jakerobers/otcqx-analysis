@@ -8,6 +8,7 @@ dependencies = [
     "browser-use>=0.1.40",
     "numpy>=2.2.4",
     "openai>=1.68.2",
+    "playwright>=1.51.0",
     "scikit-learn>=1.6.1",
     "tqdm>=4.67.1",
 ]

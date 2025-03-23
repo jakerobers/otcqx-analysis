@@ -19,7 +19,6 @@ async def make_inference(identifier, input_data, cache_dir='cache', use_cache=Tr
     key = json.dumps(input_data, sort_keys=True)
     hash_key = hashlib.sha256(key.encode()).hexdigest()
     cache_path = os.path.join(cache_dir, f"{hash_key}.json")
-    print(f"fetch key: {cache_path}")
     if use_cache and os.path.exists(cache_path):
         with open(cache_path, 'r') as f:
             data = json.load(f)
@@ -45,6 +44,5 @@ async def make_inference(identifier, input_data, cache_dir='cache', use_cache=Tr
 def cache_data(data, input_data, cache_path):
     os.makedirs(os.path.dirname(cache_path), exist_ok=True)
     data_to_cache = {**input_data, **data}
-    print(f"save key: {cache_path}")
     with open(cache_path, 'w') as f:
         json.dump(data_to_cache, f)

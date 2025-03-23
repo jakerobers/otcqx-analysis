@@ -33,10 +33,17 @@ async def dox(input_file, output_file):
         descriptions = await tqdm.gather(*tasks, desc="Fetching Descriptions")
 
         # Embed company descriptions
+        # Embed company descriptions in batches of 20
         embeddings = []
-        for description in tqdm(descriptions, desc="Embedding Descriptions"):
-            embedding_data = await make_llm_call_with_cache('embedding', {'text': description})
-            embeddings.append(embedding_data['embedding'])
+        embed_semaphore = asyncio.Semaphore(batch_size)
+
+        async def embed_description(description):
+            async with embed_semaphore:
+                embedding_data = await make_llm_call_with_cache('embedding', {'text': description})
+                return embedding_data['embedding']
+
+        embed_tasks = [embed_description(description) for description in descriptions]
+        embeddings = await tqdm.gather(*embed_tasks, desc="Embedding Descriptions")
 
         # Cluster the embeddings
         kmeans = KMeans(n_clusters=5, random_state=0)

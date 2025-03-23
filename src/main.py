@@ -57,6 +57,10 @@ async def main():
     scrape_parser = subparsers.add_parser('scrape', help='Scrape company data')
     scrape_parser.add_argument('-i', '--input', required=True, help='Input file path')
 
+    # Dox command
+    dox_parser = subparsers.add_parser('dox', help='Analyze and cluster company data')
+    dox_parser.add_argument('-i', '--input', required=True, help='Input file path')
+
     args = parser.parse_args()
 
     if args.command == 'scrape':

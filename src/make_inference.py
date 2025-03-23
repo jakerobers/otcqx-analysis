@@ -5,7 +5,6 @@ import os
 
 from fetchers import EmbeddingFetcher, DetermineFinancialLink, GetCompanyDescription, URLFetcher
 
-
 logger = logging.getLogger(__name__)
 setup_logging()
 

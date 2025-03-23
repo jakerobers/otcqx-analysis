@@ -23,7 +23,8 @@ async def _infer_financial_report_url(url_stack):
         logger.error(f"Recursion limit reached. Trace: {url_stack}")
         return
 
-    response = await make_inference('http_fetch', {'url': url})
+    current_url = url_stack[-1]
+    response = await make_inference('http_fetch', {'url': current_url})
     html_content = response['content']
 
     soup = BeautifulSoup(html_content, 'html.parser')

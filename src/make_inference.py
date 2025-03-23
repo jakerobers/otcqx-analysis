@@ -3,7 +3,7 @@ import hashlib
 import json
 import os
 
-from fetchers import EmbeddingFetcher, DetermineFinancialLink, GetCompanyDescription, URLFetcher
+from fetchers import EmbeddingFetcher, DetermineFinancialLink, GetCompanyDescription, URLFetcher, HTTPFetcher
 
 logger = logging.getLogger(__name__)
 
@@ -29,7 +29,6 @@ async def make_inference(identifier, input_data, cache_dir='cache', use_cache=Tr
         fetcher = URLFetcher()
     elif identifier == 'http_fetch':
         fetcher = HTTPFetcher()
-        raise ValueError(f"Unknown identifier: {identifier}")
 
     logger.info(f"Inference request: {identifier}, input_data: {input_data}")
     data = await fetcher.fetch(input_data)

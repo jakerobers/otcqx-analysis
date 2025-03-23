@@ -3,9 +3,11 @@ import logging
 import aiohttp
 from bs4 import BeautifulSoup
 
+logger = logging.getLogger(__name__)
+
 async def infer_financial_report_urls(url, input_file, limit=None, n=0):
     if n >= 5:
-        logging.error(f"Recursion limit reached for URL: {url}")
+        logger.error(f"Recursion limit reached for URL: {url}")
         return
 
     # Placeholder for detecting if the current URL is a financial report

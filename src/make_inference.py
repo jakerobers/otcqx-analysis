@@ -6,12 +6,16 @@ import os
 from fetchers import EmbeddingFetcher, DetermineFinancialLink, GetCompanyDescription, URLFetcher
 
 # Set up logging
-os.makedirs('logs', exist_ok=True)
-logging.basicConfig(
-    filename='logs/llm_calls.log',
-    level=logging.INFO,
-    format='%(asctime)s - %(levelname)s - %(message)s'
-)
+def setup_logging():
+    os.makedirs('logs', exist_ok=True)
+    logging.basicConfig(
+        filename='logs/llm_calls.log',
+        level=logging.INFO,
+        format='%(asctime)s - %(levelname)s - %(message)s'
+    )
+
+logger = logging.getLogger(__name__)
+setup_logging()
 
 async def make_inference(identifier, input_data, cache_dir='cache', use_cache=True):
     os.makedirs(cache_dir, exist_ok=True)
@@ -22,7 +26,7 @@ async def make_inference(identifier, input_data, cache_dir='cache', use_cache=Tr
     if use_cache and os.path.exists(cache_path):
         with open(cache_path, 'r') as f:
             data = json.load(f)
-        logging.info(f"Cached inference: {identifier}, input_data: {input_data}")
+        logger.info(f"Cached inference: {identifier}, input_data: {input_data}")
         return data
 
     if identifier == 'embedding':
@@ -36,7 +40,7 @@ async def make_inference(identifier, input_data, cache_dir='cache', use_cache=Tr
     else:
         raise ValueError(f"Unknown identifier: {identifier}")
 
-    logging.info(f"Inference request: {identifier}, input_data: {input_data}")
+    logger.info(f"Inference request: {identifier}, input_data: {input_data}")
     data = await fetcher.fetch(input_data)
     cache_data(data, input_data, cache_path)
     return data

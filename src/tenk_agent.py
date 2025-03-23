@@ -30,6 +30,8 @@ async def download_10k_reports(browser_context, company_name, num_reports=5):
 
     # Click on the first link to go to the company's main website
     await page.click_link(index=0)
+    current_url = await page.url()
+    print(f"Visited URL: {current_url}")
 
     # # Use inference to navigate to the financial reporting or investor relations page
     # potential_links = await page.find_links()

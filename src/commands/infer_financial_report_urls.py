@@ -36,10 +36,14 @@ async def _infer_financial_report_url(url_stack):
     # off on this for now.
     response = await make_inference('http_fetch', {'url': current_url})
     html_content = response['content']
+    print(html_content)
 
+    # TODO: Check if we've landed on the right page!!
+
+    # Page not found yet, check which links are available to crawl.
     soup = BeautifulSoup(html_content, 'html.parser')
     links = [(a.get('href'), a.text) for a in soup.find_all('a', href=True)]
     logger.info(f"Found links: {links}")
 
-    # TODO: do an LLM call to find the link that would most likely point
-    # ultimately towards a financial document
+    # TODO: Do inference to determine the next most likely link that would take
+    # us to the right page.

@@ -1,11 +1,22 @@
 import argparse
 import asyncio
+import logging
+import os
 from commands.get_url import get_url
+
+def setup_logging():
+    os.makedirs('logs', exist_ok=True)
+    logging.basicConfig(
+        filename='logs/llm_calls.log',
+        level=logging.INFO,
+        format='%(asctime)s - %(levelname)s - %(message)s'
+    )
 from commands.dox import dox
 from commands.infer_financial_report_urls import infer_financial_report_urls
 
 
 async def main():
+    setup_logging()
     parser = argparse.ArgumentParser(description="OTCQX Analysis Tool")
     subparsers = parser.add_subparsers(dest='command')
 

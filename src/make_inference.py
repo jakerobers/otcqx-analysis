@@ -5,14 +5,6 @@ import os
 
 from fetchers import EmbeddingFetcher, DetermineFinancialLink, GetCompanyDescription, URLFetcher
 
-# Set up logging
-def setup_logging():
-    os.makedirs('logs', exist_ok=True)
-    logging.basicConfig(
-        filename='logs/llm_calls.log',
-        level=logging.INFO,
-        format='%(asctime)s - %(levelname)s - %(message)s'
-    )
 
 logger = logging.getLogger(__name__)
 setup_logging()

@@ -90,6 +90,8 @@ async def main():
     get_url_parser = subparsers.add_parser('get-url', help='Fetch the URL for a company\'s financial documents')
     get_url_parser.add_argument('-c', '--company', required=True, help='Company name')
 
+    args = parser.parse_args()
+
     if args.command == 'scrape':
         scrape(args.input)
     elif args.command == 'dox':

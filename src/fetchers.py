@@ -56,7 +56,7 @@ class HTTPFetcher(FetcherInterface):
         async with aiohttp.ClientSession() as session:
             async with session.get(input_data['url']) as response:
                 html_content = await response.text()
-        return {'url': url, 'content': html_content}
+        return {'url': input_data['url'], 'content': html_content}
 
 
 class URLFetcher(FetcherInterface):

@@ -45,5 +45,12 @@ async def _infer_financial_report_url(url_stack):
     links = [(a.get('href'), a.text) for a in soup.find_all('a', href=True)]
     logger.info(f"Found links: {links}")
 
-    # TODO: Do inference to determine the next most likely link that would take
-    # us to the right page.
+    # Use Determine10KLink to find the most likely 10-K link
+    response = await make_inference('determine_10k_link', {'links': links})
+    best_link = response['best_match']
+    logger.info(f"Best 10-K link: {best_link}")
+
+    # If a valid link is found, add it to the stack and continue recursion
+    if best_link:
+        next_url = best_link if best_link.startswith('http') else f"{current_url}/{best_link}"
+        await _infer_financial_report_url(url_stack + [next_url])

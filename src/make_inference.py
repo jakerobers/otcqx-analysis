@@ -3,7 +3,7 @@ import hashlib
 import json
 import os
 
-from fetchers import EmbeddingFetcher, DetermineFinancialLink, GetCompanyDescription, URLFetcher, HTTPFetcher
+from fetchers import EmbeddingFetcher, DetermineFinancialLink, GetCompanyDescription, URLFetcher, HTTPFetcher, Determine10KLink
 
 logger = logging.getLogger(__name__)
 
@@ -28,6 +28,9 @@ async def make_inference(identifier, input_data, cache_dir='cache', use_cache=Tr
     elif identifier == 'url_fetch':
         fetcher = URLFetcher()
     elif identifier == 'http_fetch':
+        fetcher = HTTPFetcher()
+    elif identifier == 'determine_10k_link':
+        fetcher = Determine10KLink(model_name='gpt-4o')
         fetcher = HTTPFetcher()
 
     logger.info(f"Inference request: {identifier}, input_data: {input_data}")

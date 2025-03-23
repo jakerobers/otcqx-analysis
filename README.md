@@ -50,3 +50,10 @@ This will initiate the process of downloading the latest 10-K reports for a spec
   `src/tenk_agent.py`.
 - **Language Model**: The project uses the `gpt-4o` model from OpenAI. You
   can adjust the model settings in `src/llm_fetchers.py`.
+
+## Runbook
+
+
+```
+python ./src/main.py dox -i ./data/index/20250322_stock_screener.csv -o ./data/index/20250322_clustered_companies.csv
+```

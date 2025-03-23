@@ -13,8 +13,8 @@ class EmbeddingFetcher(FetcherInterface):
         self.client = OpenAI(api_key=api_key)
 
     async def fetch(self, input_data):
-        response = self.client.embeddings.create(input=input_data['name'], model="text-embedding-3-small")
-        return {'name': input_data['name'], 'embedding': response.data[0].embedding}
+        response = self.client.embeddings.create(input=input_data['text'], model="text-embedding-3-small")
+        return {'text': input_data['text'], 'embedding': response.data[0].embedding}
 
 class DetermineFinancialLink(FetcherInterface):
     def __init__(self, model_name='gpt-4o'):
@@ -35,7 +35,10 @@ class GetCompanyDescription(FetcherInterface):
         self.model = ChatOpenAI(model=model_name)
 
     async def fetch(self, company_name):
-        system_prompt = "You are an expert in company identification. Please help the customer with their question."
-        human_prompt = company_name
-        response = await self.model.predict(system_prompt + "\n" + human_prompt)
-        return {'company_name': company_name, 'description': response}
+        messages = [
+            ("system", "You are an expert in company identification. Please help the customer with their question."),
+            ("human", company_name)
+        ]
+
+        response = await self.model.ainvoke(messages)
+        return {'company_name': company_name, 'description': response.content}

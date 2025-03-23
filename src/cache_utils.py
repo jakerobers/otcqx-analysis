@@ -14,13 +14,13 @@ logging.basicConfig(
 )
 
 async def make_llm_call_with_cache(identifier, input_data, cache_dir='cache'):
-    logging.info(f"Making LLM call with identifier: {identifier}, input_data: {input_data}")
     os.makedirs(cache_dir, exist_ok=True)
     key = json.dumps(input_data, sort_keys=True)
     hash_key = hashlib.sha256(f"{identifier}:{key}".encode()).hexdigest()
     cache_path = os.path.join(cache_dir, f"{hash_key}.json")
     if os.path.exists(cache_path):
         with open(cache_path, 'r') as f:
+            logging.info(f"Cached inference: {identifier}, input_data: {input_data}")
             return json.load(f)
 
     if identifier == 'embedding':
@@ -32,6 +32,7 @@ async def make_llm_call_with_cache(identifier, input_data, cache_dir='cache'):
     else:
         raise ValueError(f"Unknown identifier: {identifier}")
 
+    logging.info(f"Inference request: {identifier}, input_data: {input_data}")
     data = await fetcher.fetch(input_data)
     cache_data(f"{identifier}:{key}", data, cache_dir)
     return data

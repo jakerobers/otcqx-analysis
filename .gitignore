@@ -13,4 +13,4 @@ wheels/
 # Project files
 cache/*.json
 data/index/*.csv
-
+logs

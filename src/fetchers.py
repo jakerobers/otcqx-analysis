@@ -52,7 +52,6 @@ class GetCompanyDescription(FetcherInterface):
 
 class HTTPFetcher(FetcherInterface):
     async def fetch(self, input_data):
-        import pdb; pdb.set_trace()
         async with aiohttp.ClientSession() as session:
             async with session.get(input_data['url']) as response:
                 html_content = await response.text()

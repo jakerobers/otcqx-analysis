@@ -56,7 +56,7 @@ class URLFetcher(FetcherInterface):
 
     async def fetch(self, input_data):
         async with async_playwright() as p:
-            browser = await p.chromium.launch(headless=True)
+            browser = await p.chromium.launch(headless=False)
             page = await browser.new_page()
             await page.goto("https://www.google.com")
 

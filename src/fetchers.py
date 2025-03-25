@@ -5,6 +5,7 @@ import logging
 from bs4 import BeautifulSoup
 from transformers import AutoTokenizer, AutoModel
 import torch
+from transformers import pipeline
 import aiohttp
 import os
 import re
@@ -110,7 +111,13 @@ class IsFinancialReport(FetcherInterface):
 
         embeddings = [embed_text(chunk) for chunk in chunks]
 
-        # Step 4: Calculate the mean of the embeddings
-        mean_embedding = torch.tensor(embeddings).mean(dim=0).numpy()
+        # Step 4: Zero-shot classification
+        classifier = pipeline("zero-shot-classification")
+        main_text = " ".join(chunks)
+        result = classifier(main_text, candidate_labels=["financial report", "blog post", "press release"])
 
-        return {'mean_embedding': mean_embedding}
+        # Determine if the text is a financial report based on a threshold
+        threshold = 0.8  # Example threshold
+        is_financial_report = result['scores'][result['labels'].index("financial report")] > threshold
+
+        return {'is_financial_report': is_financial_report}

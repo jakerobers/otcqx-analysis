@@ -1,10 +1,13 @@
 from abc import ABC, abstractmethod
 from openai import OpenAI
 from langchain_openai import ChatOpenAI
+import logging
 import aiohttp
 import os
 import re
 from langchain_openai import ChatOpenAI
+
+logger = logging.getLogger(__name__)
 
 class FetcherInterface(ABC):
     @abstractmethod
@@ -20,34 +23,6 @@ class EmbeddingFetcher(FetcherInterface):
         response = self.client.embeddings.create(input=input_data['text'], model="text-embedding-3-small")
         return {'text': input_data['text'], 'embedding': response.data[0].embedding}
 
-
-class DetermineFinancialLink(FetcherInterface):
-    def __init__(self, model_name='gpt-4o'):
-        self.model = ChatOpenAI(model=model_name)
-
-    async def fetch(self, potential_links):
-        prompt = (
-            "From the following list of links, identify the one that most likely leads to Investor Relations, "
-            "Financial Documents, or any page that could contain a 10-K report. "
-            "Return the link exactly as provided:\n" +
-            "\n".join([link['text'] for link in potential_links])
-        )
-        response = await self.model.predict(prompt)
-        return {'response': response}
-
-
-class Determine10KLink(FetcherInterface):
-    def __init__(self, model_name='gpt-4o'):
-        self.model = ChatOpenAI(model=model_name)
-
-    async def fetch(self, links):
-        prompt = (
-            "From the following list of links, identify the one that most likely leads to a 10-K report. "
-            "Return the link exactly as provided:\n" +
-            "\n".join([f"{link[0]}: {link[1]}" for link in links])
-        )
-        response = await self.model.predict(prompt)
-        return {'link': response}
 
 class GetCompanyDescription(FetcherInterface):
     def __init__(self, model_name='gpt-4o'):
@@ -89,3 +64,9 @@ class URLFetcher(FetcherInterface):
         url = url_match.group(0) if url_match else None
 
         return {'company_name': company_name, 'url': url}
+
+class IsFinancialReport(FetcherInterface):
+    async def fetch(self, input_data):
+        page_content = input_data['page_content']
+
+        pass

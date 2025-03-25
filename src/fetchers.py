@@ -70,6 +70,13 @@ class URLFetcher(FetcherInterface):
         return {'company_name': company_name, 'url': url}
 
 
+class PDFFetcher(FetcherInterface):
+    async def fetch(self, input_data):
+        async with aiohttp.ClientSession() as session:
+            async with session.get(input_data['url']) as response:
+                pdf_content = await response.read()
+        return {'url': input_data['url'], 'content': pdf_content}
+
 class IsFinancialReport(FetcherInterface):
     async def fetch(self, input_data):
         page_content = input_data['page_content']

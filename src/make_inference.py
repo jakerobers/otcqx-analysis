@@ -48,6 +48,8 @@ async def make_inference(identifier, input_data, cache_dir='cache', use_cache=Tr
 
 def cache_data(data, input_data, cache_path):
     os.makedirs(os.path.dirname(cache_path), exist_ok=True)
+    data_to_cache = {**input_data, **data}
+    
     # Encode binary content if present
     if 'binary_content' in data:
         data['binary_content'] = base64.b64encode(data['binary_content']).decode('utf-8')

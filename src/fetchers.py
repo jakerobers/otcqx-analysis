@@ -2,6 +2,9 @@ from abc import ABC, abstractmethod
 from openai import OpenAI
 from langchain_openai import ChatOpenAI
 import logging
+from bs4 import BeautifulSoup
+import spacy
+from sklearn.cluster import KMeans
 import aiohttp
 import os
 import re
@@ -69,4 +72,20 @@ class IsFinancialReport(FetcherInterface):
     async def fetch(self, input_data):
         page_content = input_data['page_content']
 
-        pass
+        # Step 1: Extract text from HTML
+        soup = BeautifulSoup(page_content, 'html.parser')
+        text_content = soup.get_text(separator=' ', strip=True)
+
+        # Step 2: Chunk text into 200 character segments
+        chunks = [text_content[i:i+200] for i in range(0, len(text_content), 200)]
+
+        # Step 3: Embed each chunk using spaCy
+        nlp = spacy.load('en_core_web_md')  # Ensure you have this model installed
+        embeddings = [nlp(chunk).vector for chunk in chunks]
+
+        # Step 4: Cluster the embeddings
+        kmeans = KMeans(n_clusters=5, random_state=0)
+        kmeans.fit(embeddings)
+        clusters = kmeans.labels_
+
+        return {'clusters': clusters}

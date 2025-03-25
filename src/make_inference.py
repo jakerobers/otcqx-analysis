@@ -3,7 +3,7 @@ import hashlib
 import json
 import os
 
-from fetchers import EmbeddingFetcher, GetCompanyDescription, URLFetcher, HTTPFetcher, IsFinancialReport
+from fetchers import EmbeddingFetcher, GetCompanyDescription, URLFetcher, HTTPFetcher, IsFinancialReport, PDFFetcher
 
 logger = logging.getLogger(__name__)
 

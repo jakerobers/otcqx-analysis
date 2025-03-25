@@ -11,6 +11,8 @@ dependencies = [
     "numpy>=2.2.4",
     "openai>=1.68.2",
     "playwright>=1.51.0",
+    "pypdf2>=3.0.1",
     "scikit-learn>=1.6.1",
     "tqdm>=4.67.1",
+    "transformers>=4.50.0",
 ]

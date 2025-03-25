@@ -39,21 +39,12 @@ This tool provides a set of commands that should be ran in a pipeline.
 Overall the subcommands generally run in the order of
 1. dox: get a brief understanding of the company. Can be used for grouping
    company by vertical.
-2. infer-fin-page: infers the financial reporting page (e.g., investor relations) of the company.
-3. infer-fin-report-url: infers the financial report URL (e.g., a URL to a PDF document of a specific 10-K report).
-4. get-domain: resolves the company's domain name. The first step towards
-   downstream tasks like fetching the companies financial reports.
-3. get-fin-url: resolves the full url path to the companies financial
-   documents. Requires the get-domain successfully resolved.
-4. get-url: fetches the URL for the company's financial documents.
-5. download-fin-docs: downloads the latest financial documents for the
-   company. Requires that the get-fin-url successfully resolved.
+2.
 
 ```bash
-python src/main.py agent -i "data/index/Stock_Screener.csv"
+python ./src/main.py dox -i ./data/index/20250322_stock_screener.csv -o ./data/index/20250322_clustered_companies.csv
+python ./src/main.py is-fin-report --url https://meritagehospitality.com/documents/51/Fiscal_2024_OTCQX_Annual_Report_12.29.2024.pdf
 ```
-
-This will initiate the process of downloading the latest 10-K reports for a specified company.
 
 ## Configuration
 
@@ -63,9 +54,3 @@ This will initiate the process of downloading the latest 10-K reports for a spec
 - **Language Model**: The project uses the `gpt-4o` model from OpenAI. You
   can adjust the model settings in `src/llm_fetchers.py`.
 
-## Runbook
-
-
-```
-python ./src/main.py dox -i ./data/index/20250322_stock_screener.csv -o ./data/index/20250322_clustered_companies.csv
-```

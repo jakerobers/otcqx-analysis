@@ -127,6 +127,17 @@ class IsFinancialReport(FetcherInterface):
         main_text = " ".join(chunks)
         result = classifier(main_text, candidate_labels=["financial report", "blog post", "press release"])
 
+        # NOTE:: The financial report is the highest rank, but is at 0.44.
+        # We should consider using the tf-idf weighted approach and weight
+        # certain terms higher instead of doing the mean. The mean is
+        # throwing it off because there so much extra content being fed
+        # into it.
+        #
+        # Also NOTE:: The pdf parser is pretty garbage in terms of formatting.
+        # Are there models out there that can extract based on feeding it a
+        # pdf directly? Thinking maybe something compatible with the output
+        # that an OCR model generates.
+
         # Determine if the text is a financial report based on a threshold
         threshold = 0.8  # Example threshold
         is_financial_report = result['scores'][result['labels'].index("financial report")] > threshold

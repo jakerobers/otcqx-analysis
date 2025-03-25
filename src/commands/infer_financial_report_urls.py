@@ -38,7 +38,7 @@ async def _infer_financial_report_url(url_stack):
         # Note: we'll want to disable caching for this call in production. Hold
         # off on this for now.
         response = await make_inference('http_fetch', {'url': current_url})
-    
+
     html_content = response['content']
 
     is_financial_report = await make_inference('is_financial_report', {'page_content': html_content})

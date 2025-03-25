@@ -34,7 +34,7 @@ async def main():
 
     # Check if a URL is a financial report
     is_fin_report_parser = subparsers.add_parser('is-fin-report', help='Check if a URL is a financial report')
-    is_fin_report_parser.add_argument('url', help='URL to check')
+    is_fin_report_parser.add_argument('-u', '--url', help='URL to check')
 
     get_url_parser = subparsers.add_parser('get-url', help='Fetch the URL for a company\'s financial documents')
     get_url_parser.add_argument('-i', '--input', required=True, help='Input file path')
@@ -51,4 +51,5 @@ async def main():
     elif args.command == 'get-url':
         await get_url(args.input, args.limit)
 
+if __name__ == '__main__':
     asyncio.run(main())

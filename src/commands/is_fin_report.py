@@ -11,7 +11,7 @@ async def is_fin_report(url):
 
         # Decode the Base64-encoded PDF content
         pdf_binary = base64.b64decode(page_content_response['encoded_content'])
-        
+
         # Read the PDF content
         pdf_reader = PdfReader(io.BytesIO(pdf_binary))
         raw_content = ""
@@ -28,7 +28,7 @@ async def is_fin_report(url):
         raw_content = soup.get_text(separator=' ', strip=True)
 
     # Determine if it's a financial report
-    report_check_response = await make_inference('is_financial_report', {'page_content': raw_content})
+    report_check_response = await make_inference('is_financial_report', {'page_content': raw_content}, use_cache=False)
     is_financial_report = report_check_response['is_financial_report']
 
     if is_financial_report:

@@ -42,6 +42,8 @@ async def main():
         await dox(args.input, args.output)
     elif args.command == 'infer-fin-report-urls':
         await infer_financial_report_urls(args.input, args.limit)
+    elif args.command == 'is-fin-report':
+        await is_fin_report(args.url)
     elif args.command == 'get-url':
         await get_url(args.input, args.limit)
 

@@ -69,6 +69,7 @@ class URLFetcher(FetcherInterface):
 
         return {'company_name': company_name, 'url': url}
 
+
 class IsFinancialReport(FetcherInterface):
     async def fetch(self, input_data):
         page_content = input_data['page_content']

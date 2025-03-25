@@ -76,8 +76,24 @@ class IsFinancialReport(FetcherInterface):
         soup = BeautifulSoup(page_content, 'html.parser')
         text_content = soup.get_text(separator=' ', strip=True)
 
-        # Step 2: Chunk text into 200 character segments
-        chunks = [text_content[i:i+200] for i in range(0, len(text_content), 200)]
+        # Step 2: Chunk text into 200 token segments
+        tokens = tokenizer(text_content, return_tensors="pt", truncation=False, padding=False).input_ids[0]
+        chunks = []
+        current_chunk = []
+        current_length = 0
+
+        for token in tokens:
+            current_chunk.append(token)
+            current_length += 1
+            if current_length >= 200:
+                chunks.append(current_chunk)
+                current_chunk = []
+                current_length = 0
+
+        if current_chunk:
+            chunks.append(current_chunk)
+
+        chunks = [tokenizer.decode(chunk, skip_special_tokens=True) for chunk in chunks]
 
         # Step 3: Embed each chunk using Hugging Face
         tokenizer = AutoTokenizer.from_pretrained("sentence-transformers/all-MiniLM-L6-v2")

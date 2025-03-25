@@ -35,7 +35,7 @@ async def main():
     # Check if a URL is a financial report
     is_fin_report_parser = subparsers.add_parser('is-fin-report', help='Check if a URL is a financial report')
     is_fin_report_parser.add_argument('url', help='URL to check')
-    
+
     get_url_parser = subparsers.add_parser('get-url', help='Fetch the URL for a company\'s financial documents')
     get_url_parser.add_argument('-i', '--input', required=True, help='Input file path')
     get_url_parser.add_argument('-l', '--limit', type=int, help='Limit the number of companies to process')

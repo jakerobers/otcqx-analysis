@@ -26,7 +26,7 @@ async def infer_financial_report_urls(input_file, limit=None):
 
 
 async def _infer_financial_report_url(url_stack):
-    if len(url_stack) >= 5:
+    if len(url_stack) >= 2:
         logger.error(f"Recursion limit reached. Trace: {url_stack}")
         return
 
@@ -36,21 +36,32 @@ async def _infer_financial_report_url(url_stack):
     # off on this for now.
     response = await make_inference('http_fetch', {'url': current_url})
     html_content = response['content']
-    print(html_content)
 
-    # TODO: Check if we've landed on the right page!!
+    is_financial_report = await make_inference('is_financial_report', {'page_content': html_content})
+    if is_financial_report:
+        return current_url
 
     # Page not found yet, check which links are available to crawl.
     soup = BeautifulSoup(html_content, 'html.parser')
     links = [(a.get('href'), a.text) for a in soup.find_all('a', href=True)]
-    logger.info(f"Found links: {links}")
+    logger.debug(f"Found links: {links}")
 
-    # Use Determine10KLink to find the most likely 10-K link
-    response = await make_inference('determine_10k_link', {'links': links})
-    best_link = response['best_match']
-    logger.info(f"Best 10-K link: {best_link}")
+    # TODO: Recursively call this
+    # await _infer_financial_report_url(url_stack + [next_url])
 
-    # If a valid link is found, add it to the stack and continue recursion
-    if best_link:
-        next_url = best_link if best_link.startswith('http') else f"{current_url}/{best_link}"
-        await _infer_financial_report_url(url_stack + [next_url])
+
+
+"""
+1. fetch sitemap contents
+2. embed all of the links
+3. embed a reference: "Financial reports"
+4. Find the closest matches (using z-score / mean & stddev ranking)
+5. DFS against the hits
+6. Bump recursion limit up to 10. Probably won't hit it ever.
+7. For checking if we've reached our destination...
+    a. Consider the page document d, containing a set of nodes N
+    b. Embed the nodes
+    c. Cluster the nodes
+    d. Require that some number of clusters are close in distance to reference(s) R
+    e. Could later FT a model where cluster embeddings are X.
+"""

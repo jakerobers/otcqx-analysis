@@ -27,6 +27,8 @@ async def make_inference(identifier, input_data, cache_dir='cache', use_cache=Tr
         fetcher = URLFetcher()
     elif identifier == 'http_fetch':
         fetcher = HTTPFetcher()
+    elif identifier == 'fetch_pdf':
+        fetcher = PDFFetcher()
     elif identifier == 'is_financial_report':
         fetcher = IsFinancialReport()
     else:

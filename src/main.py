@@ -5,6 +5,7 @@ import os
 from commands.get_url import get_url
 from commands.dox import dox
 from commands.infer_financial_report_urls import infer_financial_report_urls
+from make_inference import make_inference
 
 def setup_logging():
     os.makedirs('logs', exist_ok=True)
@@ -31,7 +32,10 @@ async def main():
     infer_fin_report_urls_parser.add_argument('-i', '--input', required=True, help='Input file path')
     infer_fin_report_urls_parser.add_argument('-l', '--limit', type=int, help='Limit the number of companies to process')
 
-    # Fetch domain for a company
+    # Check if a URL is a financial report
+    is_fin_report_parser = subparsers.add_parser('is-fin-report', help='Check if a URL is a financial report')
+    is_fin_report_parser.add_argument('url', help='URL to check')
+    
     get_url_parser = subparsers.add_parser('get-url', help='Fetch the URL for a company\'s financial documents')
     get_url_parser.add_argument('-i', '--input', required=True, help='Input file path')
     get_url_parser.add_argument('-l', '--limit', type=int, help='Limit the number of companies to process')
@@ -47,5 +51,17 @@ async def main():
     elif args.command == 'get-url':
         await get_url(args.input, args.limit)
 
-if __name__ == '__main__':
+async def is_fin_report(url):
+    # Fetch the page content
+    page_content_response = await make_inference('http_fetch', {'url': url})
+    raw_html = page_content_response['content']
+
+    # Determine if it's a financial report
+    report_check_response = await make_inference('is_financial_report', {'page_content': raw_html})
+    is_financial_report = report_check_response['is_financial_report']
+
+    if is_financial_report:
+        print(f"The URL {url} is a financial report.")
+    else:
+        print(f"The URL {url} is not a financial report.")
     asyncio.run(main())

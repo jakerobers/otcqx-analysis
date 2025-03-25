@@ -75,7 +75,7 @@ class PDFFetcher(FetcherInterface):
         async with aiohttp.ClientSession() as session:
             async with session.get(input_data['url']) as response:
                 pdf_content = await response.read()
-        return {'url': input_data['url'], 'content': pdf_content}
+        return {'url': input_data['url'], 'encoded_content': pdf_content}
 
 class IsFinancialReport(FetcherInterface):
     async def fetch(self, input_data):

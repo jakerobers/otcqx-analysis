@@ -5,16 +5,27 @@ async def is_fin_report(url):
     # Fetch the page content
     if url.lower().endswith('.pdf'):
         page_content_response = await make_inference('fetch_pdf', {'url': url})
-        # TODO: page_content_response was base64 encoded with:
-        # `base64.b64encode(pdf_content).decode('utf-8')`. We need to
-        # decode this back to a binary and then parse out the textual
-        # content of the PDF. Assign to `raw_content`
+        import base64
+        import io
+        from PyPDF2 import PdfReader
+
+        # Decode the Base64-encoded PDF content
+        pdf_binary = base64.b64decode(page_content_response['encoded_content'])
+        
+        # Read the PDF content
+        pdf_reader = PdfReader(io.BytesIO(pdf_binary))
+        raw_content = ""
+        for page in pdf_reader.pages:
+            raw_content += page.extract_text()
     else:
         page_content_response = await make_inference('http_fetch', {'url': url})
         raw_html = page_content_response['content']
 
-        # TODO: Use beautiful soup to parse out the textual content. Assign
-        # to `raw_content`
+        from bs4 import BeautifulSoup
+
+        # Use BeautifulSoup to parse the HTML content
+        soup = BeautifulSoup(raw_html, 'html.parser')
+        raw_content = soup.get_text(separator=' ', strip=True)
 
     # Determine if it's a financial report
     report_check_response = await make_inference('is_financial_report', {'page_content': raw_content})

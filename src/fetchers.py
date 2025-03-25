@@ -76,6 +76,9 @@ class IsFinancialReport(FetcherInterface):
         soup = BeautifulSoup(page_content, 'html.parser')
         text_content = soup.get_text(separator=' ', strip=True)
 
+        # Initialize tokenizer
+        tokenizer = AutoTokenizer.from_pretrained("sentence-transformers/all-MiniLM-L6-v2")
+
         # Step 2: Chunk text into 200 token segments
         tokens = tokenizer(text_content, return_tensors="pt", truncation=False, padding=False).input_ids[0]
         chunks = []

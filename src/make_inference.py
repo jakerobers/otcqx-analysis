@@ -3,7 +3,7 @@ import hashlib
 import json
 import os
 
-from fetchers import EmbeddingFetcher, DetermineFinancialLink, GetCompanyDescription, URLFetcher, HTTPFetcher, Determine10KLink
+from fetchers import EmbeddingFetcher, GetCompanyDescription, URLFetcher, HTTPFetcher, IsFinancialReport
 
 logger = logging.getLogger(__name__)
 
@@ -16,22 +16,22 @@ async def make_inference(identifier, input_data, cache_dir='cache', use_cache=Tr
     if use_cache and os.path.exists(cache_path):
         with open(cache_path, 'r') as f:
             data = json.load(f)
-        logger.info(f"Cached inference: {identifier}, input_data: {input_data}")
+        logger.info(f"Cached inference: {identifier}; {cache_path}; input_data: {input_data}")
         return data
 
     if identifier == 'embedding':
         fetcher = EmbeddingFetcher(api_key=os.getenv('OPENAI_API_KEY'))
-    elif identifier == 'fin_link_decision':
-        fetcher = DetermineFinancialLink(model_name='gpt-4o')
     elif identifier == 'company_description':
         fetcher = GetCompanyDescription(model_name='gpt-4o')
     elif identifier == 'url_fetch':
         fetcher = URLFetcher()
     elif identifier == 'http_fetch':
         fetcher = HTTPFetcher()
-    elif identifier == 'determine_10k_link':
-        fetcher = Determine10KLink(model_name='gpt-4o')
-        fetcher = HTTPFetcher()
+    elif identifier == 'is_financial_report':
+        fetcher = IsFinancialReport()
+    else:
+        logger.error(f"Could not find fetcher for identifier: {identifier}")
+        return
 
     logger.info(f"Inference request: {identifier}, input_data: {input_data}")
     data = await fetcher.fetch(input_data)

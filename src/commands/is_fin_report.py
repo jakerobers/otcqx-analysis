@@ -3,7 +3,11 @@ from make_inference import make_inference
 
 async def is_fin_report(url):
     # Fetch the page content
-    page_content_response = await make_inference('http_fetch', {'url': url})
+    if url.lower().endswith('.pdf'):
+        page_content_response = await make_inference('fetch_pdf', {'url': url})
+    else:
+        page_content_response = await make_inference('http_fetch', {'url': url})
+    
     raw_html = page_content_response['content']
 
     # Determine if it's a financial report

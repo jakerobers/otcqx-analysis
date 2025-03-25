@@ -5,7 +5,7 @@ import os
 from commands.get_url import get_url
 from commands.dox import dox
 from commands.infer_financial_report_urls import infer_financial_report_urls
-from make_inference import make_inference
+from commands.is_fin_report import is_fin_report
 
 def setup_logging():
     os.makedirs('logs', exist_ok=True)
@@ -51,17 +51,4 @@ async def main():
     elif args.command == 'get-url':
         await get_url(args.input, args.limit)
 
-async def is_fin_report(url):
-    # Fetch the page content
-    page_content_response = await make_inference('http_fetch', {'url': url})
-    raw_html = page_content_response['content']
-
-    # Determine if it's a financial report
-    report_check_response = await make_inference('is_financial_report', {'page_content': raw_html})
-    is_financial_report = report_check_response['is_financial_report']
-
-    if is_financial_report:
-        print(f"The URL {url} is a financial report.")
-    else:
-        print(f"The URL {url} is not a financial report.")
     asyncio.run(main())

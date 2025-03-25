@@ -3,8 +3,8 @@ from openai import OpenAI
 from langchain_openai import ChatOpenAI
 import logging
 from bs4 import BeautifulSoup
-import spacy
-from sklearn.cluster import KMeans
+from transformers import AutoTokenizer, AutoModel
+import torch
 import aiohttp
 import os
 import re
@@ -79,13 +79,19 @@ class IsFinancialReport(FetcherInterface):
         # Step 2: Chunk text into 200 character segments
         chunks = [text_content[i:i+200] for i in range(0, len(text_content), 200)]
 
-        # Step 3: Embed each chunk using spaCy
-        nlp = spacy.load('en_core_web_md')  # Ensure you have this model installed
-        embeddings = [nlp(chunk).vector for chunk in chunks]
+        # Step 3: Embed each chunk using Hugging Face
+        tokenizer = AutoTokenizer.from_pretrained("sentence-transformers/all-MiniLM-L6-v2")
+        model = AutoModel.from_pretrained("sentence-transformers/all-MiniLM-L6-v2")
 
-        # Step 4: Cluster the embeddings
-        kmeans = KMeans(n_clusters=5, random_state=0)
-        kmeans.fit(embeddings)
-        clusters = kmeans.labels_
+        def embed_text(text):
+            inputs = tokenizer(text, return_tensors="pt", truncation=True, padding=True)
+            with torch.no_grad():
+                outputs = model(**inputs)
+            return outputs.last_hidden_state.mean(dim=1).squeeze().numpy()
 
-        return {'clusters': clusters}
+        embeddings = [embed_text(chunk) for chunk in chunks]
+
+        # Step 4: Calculate the mean of the embeddings
+        mean_embedding = torch.tensor(embeddings).mean(dim=0).numpy()
+
+        return {'mean_embedding': mean_embedding}

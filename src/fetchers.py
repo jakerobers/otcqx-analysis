@@ -1,6 +1,7 @@
 from abc import ABC, abstractmethod
 from openai import OpenAI
 from langchain_openai import ChatOpenAI
+import base64
 import logging
 from bs4 import BeautifulSoup
 from transformers import AutoTokenizer, AutoModel

@@ -77,7 +77,6 @@ class PDFFetcher(FetcherInterface):
             async with session.get(input_data['url']) as response:
                 pdf_content = await response.read()
                 encoded_content = base64.b64encode(pdf_content).decode('utf-8')
-        import pdb; pdb.set_trace()
         return {'url': input_data['url'], 'encoded_content': encoded_content}
 
 class IsFinancialReport(FetcherInterface):

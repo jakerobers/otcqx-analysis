@@ -21,7 +21,7 @@ async def make_inference(identifier, input_data, cache_dir='cache', use_cache=Tr
         if row:
             data = json.loads(row[0])
             logger.info(f"Cached inference: {identifier}; key: {hash_key}; input_data: {input_data}")
-        return data
+            return data
 
     if identifier == 'embedding':
         fetcher = EmbeddingFetcher(api_key=os.getenv('OPENAI_API_KEY'))

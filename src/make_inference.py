@@ -3,6 +3,7 @@ import logging
 import hashlib
 import json
 import os
+import sqlite3
 
 from fetchers import EmbeddingFetcher, GetCompanyDescription, URLFetcher, HTTPFetcher, IsFinancialReport, PDFFetcher
 

@@ -1,18 +1,16 @@
 import asyncio
+import base64
+import io
 from make_inference import make_inference
+from PyPDF2 import PdfReader
+from bs4 import BeautifulSoup
 
 async def is_fin_report(url):
     # Fetch the page content
     if url.lower().endswith('.pdf'):
         page_content_response = await make_inference('fetch_pdf', {'url': url})
-        import base64
-        import io
-        from PyPDF2 import PdfReader
 
-        # Decode the Base64-encoded PDF content
         pdf_binary = base64.b64decode(page_content_response['encoded_content'])
-
-        # Read the PDF content
         pdf_reader = PdfReader(io.BytesIO(pdf_binary))
         raw_content = ""
         for page in pdf_reader.pages:
@@ -21,9 +19,6 @@ async def is_fin_report(url):
         page_content_response = await make_inference('http_fetch', {'url': url})
         raw_html = page_content_response['content']
 
-        from bs4 import BeautifulSoup
-
-        # Use BeautifulSoup to parse the HTML content
         soup = BeautifulSoup(raw_html, 'html.parser')
         raw_content = soup.get_text(separator=' ', strip=True)
 
